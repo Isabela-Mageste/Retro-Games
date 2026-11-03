@@ -8,6 +8,8 @@ Os demais tipos explicitamente exigidos são DECIMAL(10,2), DATETIME e BOOLEAN D
 
 As consultas com JOIN em database/003_consultas.sql são exercícios SQL executados diretamente, não código Repository. Nos repositórios futuros, cada consulta lerá uma única tabela e a composição será feita no Service com LINQ, conforme AGENTS.md.
 
-O front-end preserva uma tela inicial simples Vite/React com contador para verificar montagem e interação. A implementação completa das telas e autenticação está fora da Aula 1. Os pacotes usam as versões de referência fornecidas; o restore ainda precisa ser validado. Não foram adicionados ORM, TypeScript, Tailwind, JWT ou AutoMapper.
+O front-end preserva uma tela inicial simples Vite/React com contador para verificar montagem e interação. A implementação completa das telas e autenticação está fora da Aula 1. Os pacotes usam as versões de referência fornecidas; restore executado. Não foram adicionados ORM, TypeScript, Tailwind, JWT ou AutoMapper.
 
 Um script numerado altera estrutura; os scripts de dados/consultas são separados. 001 e 002 devem rodar uma vez em schema vazio; não usam IF NOT EXISTS ou UPSERT para esconder uma execução repetida. Nenhum script apaga automaticamente o banco.
+
+O projeto xUnit inclui Microsoft.NET.Test.Sdk 17.14.1 e xunit.runner.visualstudio 3.0.0 como infraestrutura de descoberta para o comando dotnet test pedido no roteiro; não são camadas adicionais nem ferramentas alternativas à stack. Restore e compilação verificados com SDK 10.0.403.
