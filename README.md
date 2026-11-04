@@ -45,7 +45,7 @@ npm run build
 npm run dev
 ```
 
-Abra http://localhost:5173 e clique no contador. O package-lock.json está incluído. npm install e npm run build passaram; o servidor Vite respondeu por HTTP na porta 5173. A interação visual no navegador ainda deve ser conferida.
+Abra http://localhost:5173 e clique no contador. O package-lock.json está incluído. npm install e npm run build passaram; o servidor Vite respondeu por HTTP na porta 5173. O teste no Chromium confirmou que o botão incrementa o contador de 0 para 1.
 
 ## 3. Criar e popular o banco
 
@@ -59,7 +59,7 @@ Execute, em ordem:
 4. database/004_testes_integridade.sql — um bloco por vez; execute ROLLBACK após cada erro.
 5. database/005_conferencia.sql
 
-Registre os resultados observados nos comentários de 004. Para testar recriação, use outro schema vazio e repita 001/002; isso comprova a reexecução em banco vazio sem apagar seu trabalho. Confira também tb_jogo no Table Inspector.
+Os comentários de 004 registram os resultados observados no MySQL 8.0.41. Para testar recriação, use outro schema vazio e repita 001/002; isso comprova a reexecução em banco vazio sem apagar seu trabalho. Confira também tb_jogo no Table Inspector.
 
 Não há usuário administrador nesta aula. A configuração da conexão e AdminInicial será feita em user-secrets na aula apropriada; não escreva senhas nos arquivos. O UserSecretsId já está definido no projeto WebApi.
 
@@ -82,6 +82,6 @@ Se o programa de extração ocultar .git, extraia todos os arquivos. Depois de e
 
 Crie o quadro remoto usando docs/QUADRO_TAREFAS.md. As seis funcionalidades permanecem A fazer: preparar a base não significa concluí-las.
 
-## Situação real da entrega
+## Situação da entrega
 
-Arquivos produzidos e conferidos estaticamente; front-end instalado, compilado e servido com sucesso. A solução .NET também foi compilada após disponibilizar o SDK temporariamente. MySQL não está disponível: execução SQL e testes de integridade ainda não foram executados. GitHub/Projects não foram criados. Veja docs/VALIDACAO.md para distinguir o que está pronto do que falta comprovar. Não apresente resultados esperados como testes realizados.
+Solução compilada e front-end testado em navegador. Os cinco scripts SQL foram executados em dois schemas vazios no MySQL 8.0.41. Veja os resultados em docs/VALIDACAO.md. A publicação do repositório e do quadro no GitHub e a conferência no Workbench da máquina do estudante seguem pendentes.
