@@ -148,3 +148,6 @@ que falta.
 - Separe hipótese de fato confirmado.
 - Deixe claro quando um trecho é só exemplo e não deve ir para o projeto.
 
+## Orientação aprovada para a Aula 2
+
+O estudante escolheu seguir o roteiro da Aula 2 para a conexão. Use .env local ignorado pelo Git e .env.example com marcadores sem credenciais. O carregamento pela API está previsto para a Aula 4. Esta orientação específica prevalece sobre a instrução anterior de user-secrets para esta etapa.
