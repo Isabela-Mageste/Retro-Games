@@ -1,0 +1,94 @@
+using MySqlConnector;
+using RetroGames.Model.Model;
+
+namespace RetroGames.Repository;
+
+public class PlataformaRepository : RepositoryBase, IPlataformaRepository
+{
+    public PlataformaRepository(RepositoryConfig configuracao) : base(configuracao) { }
+
+    public async Task<IReadOnlyList<Plataforma>> ListarAsync(CancellationToken cancelamento = default)
+    {
+        const string sql = "SELECT co_seq_plataforma, no_plataforma, no_fabricante, nu_ano_lancamento FROM tb_plataforma ORDER BY no_plataforma, co_seq_plataforma";
+        await using var conexao = await AbrirConexaoAsync(cancelamento);
+        await using var comando = CriarComando(conexao, sql);
+        await using var leitor = await comando.ExecuteReaderAsync(cancelamento);
+        var plataformas = new List<Plataforma>();
+        while (await leitor.ReadAsync(cancelamento))
+            plataformas.Add(Mapear(leitor));
+        return plataformas;
+    }
+
+    public async Task<Plataforma?> BuscarPorIdAsync(int id, CancellationToken cancelamento = default)
+    {
+        const string sql = "SELECT co_seq_plataforma, no_plataforma, no_fabricante, nu_ano_lancamento FROM tb_plataforma WHERE co_seq_plataforma = @id";
+        await using var conexao = await AbrirConexaoAsync(cancelamento);
+        await using var comando = CriarComando(conexao, sql);
+        AdicionarParametro(comando, "@id", id);
+        await using var leitor = await comando.ExecuteReaderAsync(cancelamento);
+        return await leitor.ReadAsync(cancelamento) ? Mapear(leitor) : null;
+    }
+
+    public async Task<bool> ExisteComNomeAsync(string nome, int? idIgnorar = null, CancellationToken cancelamento = default)
+    {
+        const string sql = "SELECT 1 FROM tb_plataforma WHERE no_plataforma = @nome AND (@idIgnorar IS NULL OR co_seq_plataforma <> @idIgnorar) LIMIT 1";
+        await using var conexao = await AbrirConexaoAsync(cancelamento);
+        await using var comando = CriarComando(conexao, sql);
+        AdicionarParametro(comando, "@nome", nome);
+        AdicionarParametro(comando, "@idIgnorar", idIgnorar);
+        return await comando.ExecuteScalarAsync(cancelamento) is not null;
+    }
+
+    public async Task<bool> PossuiJogosAsync(int idPlataforma, CancellationToken cancelamento = default)
+    {
+        const string sql = "SELECT 1 FROM tb_jogo WHERE co_plataforma = @idPlataforma LIMIT 1";
+        await using var conexao = await AbrirConexaoAsync(cancelamento);
+        await using var comando = CriarComando(conexao, sql);
+        AdicionarParametro(comando, "@idPlataforma", idPlataforma);
+        return await comando.ExecuteScalarAsync(cancelamento) is not null;
+    }
+
+    public async Task<int> InserirAsync(Plataforma plataforma, CancellationToken cancelamento = default)
+    {
+        const string sql = "INSERT INTO tb_plataforma (no_plataforma, no_fabricante, nu_ano_lancamento) VALUES (@nome, @fabricante, @ano)";
+        await using var conexao = await AbrirConexaoAsync(cancelamento);
+        await using var comando = CriarComando(conexao, sql);
+        PreencherParametros(comando, plataforma);
+        await ExecutarGravacaoAsync(comando, cancelamento);
+        return checked((int)comando.LastInsertedId);
+    }
+
+    public async Task AlterarAsync(Plataforma plataforma, CancellationToken cancelamento = default)
+    {
+        const string sql = "UPDATE tb_plataforma SET no_plataforma = @nome, no_fabricante = @fabricante, nu_ano_lancamento = @ano WHERE co_seq_plataforma = @id";
+        await using var conexao = await AbrirConexaoAsync(cancelamento);
+        await using var comando = CriarComando(conexao, sql);
+        PreencherParametros(comando, plataforma);
+        AdicionarParametro(comando, "@id", plataforma.Id);
+        await ExecutarGravacaoAsync(comando, cancelamento);
+    }
+
+    public async Task ExcluirAsync(int id, CancellationToken cancelamento = default)
+    {
+        const string sql = "DELETE FROM tb_plataforma WHERE co_seq_plataforma = @id";
+        await using var conexao = await AbrirConexaoAsync(cancelamento);
+        await using var comando = CriarComando(conexao, sql);
+        AdicionarParametro(comando, "@id", id);
+        await comando.ExecuteNonQueryAsync(cancelamento);
+    }
+
+    private void PreencherParametros(MySqlCommand comando, Plataforma plataforma)
+    {
+        AdicionarParametro(comando, "@nome", plataforma.Nome);
+        AdicionarParametro(comando, "@fabricante", plataforma.Fabricante);
+        AdicionarParametro(comando, "@ano", plataforma.AnoLancamento);
+    }
+
+    private static Plataforma Mapear(MySqlDataReader leitor) => new()
+    {
+        Id = leitor.GetInt32("co_seq_plataforma"),
+        Nome = leitor.GetString("no_plataforma"),
+        Fabricante = leitor.GetString("no_fabricante"),
+        AnoLancamento = leitor.GetInt32("nu_ano_lancamento")
+    };
+}
