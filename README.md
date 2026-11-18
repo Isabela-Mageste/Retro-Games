@@ -1,6 +1,6 @@
-# RetroGames — Entrega da Aula 1
+# RetroGames — Aulas 1 e 2
 
-Base preparada a partir dos três PDFs fornecidos. Comece por este arquivo. O escopo é ambiente, banco de dados e modelos; as funcionalidades completas do módulo serão implementadas nas próximas aulas.
+Projeto integrado com a base da Aula 1 e a camada Repository da Aula 2. Comece por docs/AULA2.md para configurar a conexão local e conferir os contratos dos repositórios.
 
 ## Conteúdo
 
@@ -10,7 +10,9 @@ Base preparada a partir dos três PDFs fornecidos. Comece por este arquivo. O es
 - NBA Jam inativo; Tetris com estoque zero; usuários vazios.
 - Cinco consultas solicitadas e cinco testes de integridade isolados com rollback.
 - Sete modelos com comentário de coluna em cada propriedade; constantes de condições e perfis.
-- Seis cartões locais, decisões técnicas e histórico Git de seis etapas.
+- Cinco repositórios com interfaces, RepositoryBase, RepositoryConfig, RegistroDuplicadoException e RepositorySet.
+- Modelo .env.example, SQL de conferência da Aula 2 e relatório de validação.
+- Seis cartões locais, decisões técnicas e histórico Git das duas aulas.
 
 ## 1. Verificar ambiente
 
@@ -61,7 +63,7 @@ Execute, em ordem:
 
 Os comentários de 004 registram os resultados observados no MySQL 8.0.41. Para testar recriação, use outro schema vazio e repita 001/002; isso comprova a reexecução em banco vazio sem apagar seu trabalho. Confira também tb_jogo no Table Inspector.
 
-Não há usuário administrador nesta aula. A configuração da conexão e AdminInicial será feita em user-secrets na aula apropriada; não escreva senhas nos arquivos. O UserSecretsId já está definido no projeto WebApi.
+A Aula 2 prepara a conexão em .env local, conforme a orientação escolhida pelo estudante. Copie .env.example para .env e preencha os dados do seu MySQL. Confira docs/AULA2.md. AdminInicial será configurado na aula de autenticação.
 
 ## 4. Entender o código
 
@@ -71,17 +73,17 @@ A cadeia futura será Controller → Service → Repository. Os projetos já pos
 
 ## 5. Histórico e GitHub
 
-O ZIP inclui o repositório Git local na branch aula-1, com seis commits de preparação e sem remote. Não há autenticação GitHub armazenada. Confira:
+O ZIP inclui o repositório Git local na branch aula-2. O histórico conserva os seis commits da Aula 1, seu commit de validação e acrescenta um commit por etapa da Aula 2. O remote depende da sua conta GitHub. Não há autenticação GitHub armazenada. Confira:
 
 ```sh
 git log --oneline
 git status
 ```
 
-Se o programa de extração ocultar .git, extraia todos os arquivos. Depois de executar as verificações, crie no GitHub um repositório vazio RetroGames, copie a URL fornecida pelo próprio GitHub e use `git remote add origin URL_COPIADA` (substitua o marcador). Envie com `git push -u origin aula-1`. Não renomeie/integre à main antes de compilar e verificar.
+Se o programa de extração ocultar .git, extraia todos os arquivos. Depois de executar as verificações, crie no GitHub um repositório vazio RetroGames, copie a URL fornecida pelo próprio GitHub e use `git remote add origin URL_COPIADA` (substitua o marcador). Envie com `git push -u origin aula-2`. Não renomeie/integre à main antes de compilar e verificar.
 
-Crie o quadro remoto usando docs/QUADRO_TAREFAS.md. As seis funcionalidades permanecem A fazer: preparar a base não significa concluí-las.
+Crie o quadro remoto usando docs/QUADRO_TAREFAS.md. O quadro registra o avanço da camada Repository nas funcionalidades correspondentes.
 
 ## Situação da entrega
 
-Solução compilada e front-end testado em navegador. Os cinco scripts SQL foram executados em dois schemas vazios no MySQL 8.0.41. Veja os resultados em docs/VALIDACAO.md. A publicação do repositório e do quadro no GitHub e a conferência no Workbench da máquina do estudante seguem pendentes.
+Solução compilada e front-end testado em navegador. Os cinco scripts SQL foram executados em dois schemas vazios no MySQL 8.0.41. Os resultados da Aula 1 estão em docs/VALIDACAO.md e os da Aula 2 em docs/VALIDACAO_AULA2.md. A publicação do repositório e do quadro no GitHub e a conferência no Workbench da máquina do estudante seguem pendentes.
