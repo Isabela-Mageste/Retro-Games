@@ -42,7 +42,7 @@ JSON malformado ou texto num campo numérico também responde 400 com código 3 
 
 | Etapa | Arquivos |
 |---|---|
-| 1. Usuários e senhas | `IUsuarioRepository`/`UsuarioRepository`, `Model/Constantes/Perfis.cs`, `IAutenticacaoService`/`AutenticacaoService`, administrador inicial no `Program.cs`, `.env.example` |
+| 1. Usuários e senhas | `database/008_verificar_usuario.sql` (SQL conferido no Workbench), `IUsuarioRepository`/`UsuarioRepository`, `Model/Constantes/Perfis.cs`, `IAutenticacaoService`/`AutenticacaoService`, administrador inicial no `Program.cs`, `.env.example` |
 | 2. Sessão e login | Códigos 4–6, `Configuration/AutenticacaoConfig.cs` (cookie `retrogames.sessao`), `Extensions/ClaimsPrincipalExtensions.cs`, `LoginRequestApiModel`, `UsuarioLogadoResponseApiModel`, `LoginRequestValidator`, `AutenticacaoController` |
 | 3. Proteção | `Configuration/Politicas.cs`, `Configuration/AutorizacaoConfig.cs` (FallbackPolicy + SomenteAdministrador), `IUsuarioAtualService` (Services), `Services/UsuarioAtualService.cs` (WebApi), RN04 no `JogoService` |
 
@@ -52,11 +52,17 @@ O `PasswordHasher` vem do pacote `Microsoft.Extensions.Identity.Core`, referenci
 
 | Etapa | Arquivos |
 |---|---|
-| 1. Projeto | `vite.config.js` (porta 5173, proxy `/api` → 5080), `main.jsx`, `App.jsx` |
+| 1. Projeto | `vite.config.js` (plugin React do template, porta 5173, proxy `/api` → 5080), `main.jsx`, `App.jsx` |
 | 2. Acesso à API | `src/api/api.js` (único que importa o Axios), `servicos.js`, `erros.js`, `src/lib/formato.js` |
 | 3. Layout e rotas | `components/Layout.jsx`, `components/MensagensEstado.jsx`, `pages/NaoEncontrada.jsx`, rotas no `App.jsx` |
 | 4. Catálogo | `pages/Catalogo/Catalogo.jsx` (filtros na URL com `useSearchParams`), `components/CardJogo.jsx`, `components/Paginacao.jsx` |
 | 5. Detalhe | `pages/Catalogo/DetalheJogo.jsx` |
+
+## Como repetir a conferência
+
+Com o banco e a API no ar, execute `bash docs/conferencia_api.sh` na raiz (Git Bash). O script cobre as etapas 4 das
+Aulas 5 e 6 ("todas as respostas da API"): 61 verificações de status e `responseCode`, terminando com
+`RESULTADO: N OK, 0 FALHA`. Ele cria e exclui plataformas de teste e deixa um jogo "Contra" desativado.
 
 ## Verificação executada em 24/11/2026
 

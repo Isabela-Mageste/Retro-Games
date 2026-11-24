@@ -66,6 +66,11 @@ dotnet test RetroGames.sln
 cd retrogames.web && npm run build
 ```
 
+Com o banco e a API no ar, `bash docs/conferencia_api.sh` (Git Bash) provoca cada resposta pedida nos
+roteiros das Aulas 4 a 6 e mostra OK ou FALHA para o status e o `responseCode` de cada uma. No Workbench,
+`database/007_verificar_repository.sql` (Aula 2) e `database/008_verificar_usuario.sql` (Aula 6) conferem
+o SQL dos repositórios, desfazendo as gravações no final.
+
 ## Rotas da API
 
 | Método | Rota | Acesso |
