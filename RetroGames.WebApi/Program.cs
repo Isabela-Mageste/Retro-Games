@@ -1,4 +1,5 @@
 using RetroGames.WebApi.Configuration;
+using RetroGames.WebApi.Middlewares;
 
 // Lê o .env da raiz do repositório (procurando nas pastas acima) e publica cada linha
 // como variável de ambiente: ConnectionStrings__Default vira ConnectionStrings:Default.
@@ -20,10 +21,14 @@ builder.Services.AddRepositorios(connectionString);
 builder.Services.AddServicosDeNegocio();
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
 // 2. Pipeline (a ordem importa)
+app.UseExceptionHandler(); // primeira etapa: exceções → envelope de erro
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
