@@ -65,7 +65,7 @@ Ambiente: .NET SDK 10.0.404, Node.js 22.23.5, MySQL Community Server 8.4.10 num 
 | Verificação | Resultado |
 |---|---|
 | `dotnet build RetroGames.sln` | 0 avisos, 0 erros |
-| `dotnet test RetroGames.sln` | Executa; o projeto ainda não tem testes (nenhum roteiro das Aulas 3–7 pede) |
+| `dotnet test RetroGames.sln` | 42 testes aprovados, 0 falhas (Services, validators, controller e handler global; veja `RetroGames.WebApi.UnitTests/README.md`) |
 | `npm ci` e `npm run build` | Build concluído (os avisos `"use client"` vêm do pacote react-router) |
 | Swagger e `/openapi/v1.json` sem login | 200 |
 | GET plataformas, gêneros, condições, jogos | 200 com envelope; 23 jogos ativos, 2 páginas de 12 |
@@ -87,5 +87,7 @@ Ambiente: .NET SDK 10.0.404, Node.js 22.23.5, MySQL Community Server 8.4.10 num 
 | Administrador inicial | Hash de 84 caracteres; reiniciar a API não cria outro; a senha não aparece no log |
 | API sem `ConnectionStrings__Default` | Para na subida com mensagem clara (código de saída 1) |
 | Navegador em `localhost:5173` | Catálogo, filtro de plataforma na URL, Voltar, página 2, `/jogos/22` (Tetris esgotado, sem "null"), `/jogos/9999` ("Jogo não encontrado."), `/qualquer-coisa` e busca vazia |
+| Tela de 375 px | O menu vira botão e abre ao clicar; sem rolagem horizontal |
+| Front-end com a API parada | Mensagem "Não foi possível conectar ao servidor." com Tentar novamente, sem quebrar a tela |
 
 O jogo criado nos testes foi removido do banco ao final. O 403 (código 5) depende de um usuário sem perfil de administrador, que só existirá no Módulo de Compras (roteiro da Aula 6, etapa 4).

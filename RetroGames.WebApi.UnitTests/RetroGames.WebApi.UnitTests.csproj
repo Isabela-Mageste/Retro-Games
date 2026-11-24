@@ -8,6 +8,10 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <!-- Tipos do ASP.NET Core (DefaultHttpContext, resultados de action) usados nos testes. -->
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="../RetroGames.WebApi/RetroGames.WebApi.csproj" />
     <ProjectReference Include="../RetroGames.Services/RetroGames.Services.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
