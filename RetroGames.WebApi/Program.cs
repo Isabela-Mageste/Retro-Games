@@ -1,12 +1,36 @@
-var construtor = WebApplication.CreateBuilder(args);
-construtor.Services.AddControllers();
-construtor.Services.AddOpenApi();
-var aplicacao = construtor.Build();
-if (aplicacao.Environment.IsDevelopment())
+using RetroGames.WebApi.Configuration;
+
+// Lê o .env da raiz do repositório (procurando nas pastas acima) e publica cada linha
+// como variável de ambiente: ConnectionStrings__Default vira ConnectionStrings:Default.
+DotNetEnv.Env.TraversePath().Load();
+
+var builder = WebApplication.CreateBuilder(args);
+
+var connectionString = builder.Configuration.GetConnectionString("Default");
+if (string.IsNullOrWhiteSpace(connectionString))
 {
-    aplicacao.MapOpenApi();
-    aplicacao.UseSwaggerUI(opcoes =>
-        opcoes.SwaggerEndpoint("/openapi/v1.json", "RetroGames — Aula 1"));
+    Console.Error.WriteLine(
+        "Connection string não configurada: falta a linha ConnectionStrings__Default no arquivo .env. " +
+        "Copie .env.example para .env, na raiz do repositório, e preencha os dados do seu MySQL.");
+    return 1;
 }
-aplicacao.MapControllers();
-aplicacao.Run();
+
+// 1. Serviços (injeção de dependência)
+builder.Services.AddRepositorios(connectionString);
+builder.Services.AddServicosDeNegocio();
+builder.Services.AddControllers();
+builder.Services.AddOpenApi();
+
+var app = builder.Build();
+
+// 2. Pipeline (a ordem importa)
+if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+    app.UseSwaggerUI(opcoes => opcoes.SwaggerEndpoint("/openapi/v1.json", "RetroGames"));
+}
+
+app.MapControllers();
+
+await app.RunAsync();
+return 0;

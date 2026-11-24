@@ -10,6 +10,7 @@
     <ProjectReference Include="../RetroGames.Repository/RetroGames.Repository.csproj" />
     <ProjectReference Include="../RetroGames.Services/RetroGames.Services.csproj" />
     <ProjectReference Include="../RetroGames.WebApi.ApiModels/RetroGames.WebApi.ApiModels.csproj" />
+    <PackageReference Include="DotNetEnv" Version="3.1.1" />
     <PackageReference Include="FluentValidation" Version="12.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.14" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.0.0" />
