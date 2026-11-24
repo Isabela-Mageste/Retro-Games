@@ -1,7 +1,7 @@
 ID,Título,Estado
-US01,Catálogo público,Em andamento
-US02,Detalhe de jogo,Em andamento
+US01,Catálogo público,Concluído
+US02,Detalhe de jogo,Concluído
 US03,Manutenção de plataformas,Em andamento
 US04,Manutenção de jogos,Em andamento
-US05,Consulta de domínios,Em andamento
-US06,Autenticação e autorização,A fazer
+US05,Consulta de domínios,Concluído
+US06,Autenticação e autorização,Em andamento
