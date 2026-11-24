@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RetroGames.Services;
 using RetroGames.WebApi.ApiModels;
+using RetroGames.WebApi.Configuration;
 using RetroGames.WebApi.Mappers;
 
 namespace RetroGames.WebApi.Controllers;
@@ -12,6 +14,7 @@ namespace RetroGames.WebApi.Controllers;
 public class PlataformaController(IPlataformaService plataformaService) : ControllerBase
 {
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<RetroGamesResponseApiModel<List<ListarPlataformaResponseApiModel>>>> Listar()
     {
         var plataformas = await plataformaService.ListarAsync();
@@ -20,6 +23,7 @@ public class PlataformaController(IPlataformaService plataformaService) : Contro
     }
 
     [HttpGet("{id:int}")]
+    [AllowAnonymous]
     public async Task<ActionResult<RetroGamesResponseApiModel<ListarPlataformaResponseApiModel>>> ListarPorId(int id)
     {
         var plataforma = await plataformaService.BuscarPorIdAsync(id);
@@ -27,6 +31,7 @@ public class PlataformaController(IPlataformaService plataformaService) : Contro
     }
 
     [HttpPost]
+    [Authorize(Policy = Politicas.Administrador)]
     public async Task<ActionResult<RetroGamesResponseApiModel<ListarPlataformaResponseApiModel>>> Inserir(
         InserirPlataformaRequestApiModel request)
     {
@@ -38,6 +43,7 @@ public class PlataformaController(IPlataformaService plataformaService) : Contro
     }
 
     [HttpPut("{id:int}")]
+    [Authorize(Policy = Politicas.Administrador)]
     public async Task<ActionResult<RetroGamesResponseApiModel<ListarPlataformaResponseApiModel>>> Alterar(
         int id, AlterarPlataformaRequestApiModel request)
     {
@@ -46,6 +52,7 @@ public class PlataformaController(IPlataformaService plataformaService) : Contro
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize(Policy = Politicas.Administrador)]
     public async Task<ActionResult<RetroGamesResponseApiModel>> Excluir(int id)
     {
         await plataformaService.ExcluirAsync(id);

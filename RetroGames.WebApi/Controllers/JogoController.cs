@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RetroGames.Services;
 using RetroGames.WebApi.ApiModels;
+using RetroGames.WebApi.Configuration;
 using RetroGames.WebApi.Mappers;
 
 namespace RetroGames.WebApi.Controllers;
@@ -10,6 +12,7 @@ namespace RetroGames.WebApi.Controllers;
 public class JogoController(IJogoService jogoService) : ControllerBase
 {
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<RetroGamesResponseApiModel<PaginaResponseApiModel<ListarJogoResponseApiModel>>>> Listar(
         [FromQuery] ListarJogoRequestApiModel request)
     {
@@ -18,6 +21,7 @@ public class JogoController(IJogoService jogoService) : ControllerBase
     }
 
     [HttpGet("{id:int}")]
+    [AllowAnonymous]
     public async Task<ActionResult<RetroGamesResponseApiModel<ListarPorIdJogoResponseApiModel>>> ListarPorId(int id)
     {
         var detalhe = await jogoService.BuscarPorIdAsync(id);
@@ -25,6 +29,7 @@ public class JogoController(IJogoService jogoService) : ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Policy = Politicas.Administrador)]
     public async Task<ActionResult<RetroGamesResponseApiModel<ListarPorIdJogoResponseApiModel>>> Inserir(
         InserirJogoRequestApiModel request)
     {
@@ -34,6 +39,7 @@ public class JogoController(IJogoService jogoService) : ControllerBase
     }
 
     [HttpPut("{id:int}")]
+    [Authorize(Policy = Politicas.Administrador)]
     public async Task<ActionResult<RetroGamesResponseApiModel<ListarPorIdJogoResponseApiModel>>> Alterar(
         int id, AlterarJogoRequestApiModel request)
     {
@@ -43,6 +49,7 @@ public class JogoController(IJogoService jogoService) : ControllerBase
 
     // Exclusão lógica (RN03): o jogo só é desativado.
     [HttpDelete("{id:int}")]
+    [Authorize(Policy = Politicas.Administrador)]
     public async Task<ActionResult<RetroGamesResponseApiModel>> Desativar(int id)
     {
         await jogoService.DesativarAsync(id);

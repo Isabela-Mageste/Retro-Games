@@ -14,6 +14,7 @@ public static class JogoMapper
         IdGenero = request.IdGenero,
         Pagina = request.Pagina,
         TamanhoPagina = request.TamanhoPagina,
+        IncluirInativos = request.IncluirInativos,
     };
 
     public static Jogo ParaModel(this InserirJogoRequestApiModel request) => new()

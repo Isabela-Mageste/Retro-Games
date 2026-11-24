@@ -13,6 +13,7 @@ namespace RetroGames.WebApi.Controllers;
 public class AutenticacaoController(IAutenticacaoService autenticacaoService) : ControllerBase
 {
     [HttpPost("login")]
+    [AllowAnonymous]
     public async Task<ActionResult<RetroGamesResponseApiModel<UsuarioLogadoResponseApiModel>>> Login(
         LoginRequestApiModel request)
     {
@@ -30,8 +31,8 @@ public class AutenticacaoController(IAutenticacaoService autenticacaoService) : 
         return Ok(new RetroGamesResponseApiModel<UsuarioLogadoResponseApiModel>(principal.ParaUsuarioLogado()));
     }
 
+    // Logout e eu: vale a política padrão (exige login).
     [HttpPost("logout")]
-    [Authorize]
     public async Task<ActionResult<RetroGamesResponseApiModel>> Logout()
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
@@ -39,7 +40,6 @@ public class AutenticacaoController(IAutenticacaoService autenticacaoService) : 
     }
 
     [HttpGet("eu")]
-    [Authorize]
     public ActionResult<RetroGamesResponseApiModel<UsuarioLogadoResponseApiModel>> Eu()
     {
         return Ok(new RetroGamesResponseApiModel<UsuarioLogadoResponseApiModel>(User.ParaUsuarioLogado()));

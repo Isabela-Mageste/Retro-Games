@@ -23,6 +23,7 @@ if (string.IsNullOrWhiteSpace(connectionString))
 builder.Services.AddRepositorios(connectionString);
 builder.Services.AddServicosDeNegocio();
 builder.Services.AddAutenticacaoPorCookie(builder.Environment);
+builder.Services.AddPoliticasDeAutorizacao();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddControllers(opcoes =>
     {
@@ -69,7 +70,7 @@ app.UseExceptionHandler(); // primeira etapa: exceções → envelope de erro
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.MapOpenApi().AllowAnonymous(); // sem isso o /swagger não carrega a definição da API
     app.UseSwaggerUI(opcoes => opcoes.SwaggerEndpoint("/openapi/v1.json", "RetroGames"));
 }
 

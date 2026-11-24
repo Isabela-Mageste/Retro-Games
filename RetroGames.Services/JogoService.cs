@@ -7,7 +7,7 @@ namespace RetroGames.Services;
 
 // Regras de jogo: RN03 (exclusão lógica), RN04 (catálogo público só com ativos) e
 // RN05 (referências válidas). Os dados de várias tabelas são combinados com LINQ.
-public class JogoService(IRepositorySet repositorio) : IJogoService
+public class JogoService(IRepositorySet repositorio, IUsuarioAtualService usuarioAtual) : IJogoService
 {
     public async Task<PaginaServiceModel<JogoDetalheServiceModel>> ListarAsync(ListarJogoFiltroServiceModel filtro)
     {
@@ -26,9 +26,10 @@ public class JogoService(IRepositorySet repositorio) : IJogoService
 
         var busca = string.IsNullOrWhiteSpace(filtro.Busca) ? null : filtro.Busca.Trim();
 
-        // RN04: a consulta pública devolve apenas jogos ativos.
+        // RN04: a consulta pública devolve apenas jogos ativos; inativos só para o administrador.
+        var incluirInativos = filtro.IncluirInativos && usuarioAtual.EhAdministrador;
         var (jogos, total) = await repositorio.Jogo.ListarAsync(
-            busca, filtro.IdPlataforma, idsJogos, false, filtro.Pagina, filtro.TamanhoPagina);
+            busca, filtro.IdPlataforma, idsJogos, incluirInativos, filtro.Pagina, filtro.TamanhoPagina);
 
         return new PaginaServiceModel<JogoDetalheServiceModel>
         {
@@ -43,8 +44,8 @@ public class JogoService(IRepositorySet repositorio) : IJogoService
     {
         var jogo = await repositorio.Jogo.BuscarPorIdAsync(id);
 
-        // RN04: jogo inativo não aparece no catálogo público.
-        if (jogo is null || !jogo.Ativo)
+        // RN04: para quem não é administrador, jogo inativo é tratado como inexistente.
+        if (jogo is null || (!jogo.Ativo && !usuarioAtual.EhAdministrador))
             throw new BusinessRuleException(BusinessErrors.JOGO_NAO_ENCONTRADO);
 
         return (await MontarDetalhesAsync([jogo]))[0];

@@ -8,4 +8,7 @@ public class ListarJogoFiltroServiceModel
     public int? IdGenero { get; set; }
     public int Pagina { get; set; } = 1;
     public int TamanhoPagina { get; set; } = 12;
+
+    // Só tem efeito para o administrador (RN04).
+    public bool IncluirInativos { get; set; }
 }
