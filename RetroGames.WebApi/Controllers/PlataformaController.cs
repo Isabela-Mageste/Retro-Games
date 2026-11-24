@@ -25,4 +25,30 @@ public class PlataformaController(IPlataformaService plataformaService) : Contro
         var plataforma = await plataformaService.BuscarPorIdAsync(id);
         return Ok(new RetroGamesResponseApiModel<ListarPlataformaResponseApiModel>(plataforma.ParaResponse()));
     }
+
+    [HttpPost]
+    public async Task<ActionResult<RetroGamesResponseApiModel<ListarPlataformaResponseApiModel>>> Inserir(
+        InserirPlataformaRequestApiModel request)
+    {
+        var criada = await plataformaService.InserirAsync(request.ParaModel());
+
+        // 201 Created, com o cabeçalho Location apontando para GET /api/Plataforma/{id}.
+        return CreatedAtAction(nameof(ListarPorId), new { id = criada.Id },
+            new RetroGamesResponseApiModel<ListarPlataformaResponseApiModel>(criada.ParaResponse()));
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<RetroGamesResponseApiModel<ListarPlataformaResponseApiModel>>> Alterar(
+        int id, AlterarPlataformaRequestApiModel request)
+    {
+        var alterada = await plataformaService.AlterarAsync(request.ParaModel(id));
+        return Ok(new RetroGamesResponseApiModel<ListarPlataformaResponseApiModel>(alterada.ParaResponse()));
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult<RetroGamesResponseApiModel>> Excluir(int id)
+    {
+        await plataformaService.ExcluirAsync(id);
+        return Ok(new RetroGamesResponseApiModel());
+    }
 }
