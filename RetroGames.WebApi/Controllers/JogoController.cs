@@ -23,4 +23,29 @@ public class JogoController(IJogoService jogoService) : ControllerBase
         var detalhe = await jogoService.BuscarPorIdAsync(id);
         return Ok(new RetroGamesResponseApiModel<ListarPorIdJogoResponseApiModel>(detalhe.ParaDetalheResponse()));
     }
+
+    [HttpPost]
+    public async Task<ActionResult<RetroGamesResponseApiModel<ListarPorIdJogoResponseApiModel>>> Inserir(
+        InserirJogoRequestApiModel request)
+    {
+        var criado = await jogoService.InserirAsync(request.ParaModel(), request.IdsGeneros);
+        return CreatedAtAction(nameof(ListarPorId), new { id = criado.Jogo.Id },
+            new RetroGamesResponseApiModel<ListarPorIdJogoResponseApiModel>(criado.ParaDetalheResponse()));
+    }
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult<RetroGamesResponseApiModel<ListarPorIdJogoResponseApiModel>>> Alterar(
+        int id, AlterarJogoRequestApiModel request)
+    {
+        var alterado = await jogoService.AlterarAsync(request.ParaModel(id), request.IdsGeneros);
+        return Ok(new RetroGamesResponseApiModel<ListarPorIdJogoResponseApiModel>(alterado.ParaDetalheResponse()));
+    }
+
+    // Exclusão lógica (RN03): o jogo só é desativado.
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult<RetroGamesResponseApiModel>> Desativar(int id)
+    {
+        await jogoService.DesativarAsync(id);
+        return Ok(new RetroGamesResponseApiModel());
+    }
 }

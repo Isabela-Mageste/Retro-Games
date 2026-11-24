@@ -55,7 +55,7 @@ public class JogoService(IRepositorySet repositorio) : IJogoService
         var generos = idsGeneros.Distinct().ToList();
         await ValidarReferenciasAsync(jogo, generos);
 
-        jogo.Nome = jogo.Nome.Trim();
+        NormalizarTextos(jogo);
         jogo.Ativo = true;
         jogo.DataCadastro = DateTime.UtcNow;
 
@@ -86,7 +86,7 @@ public class JogoService(IRepositorySet repositorio) : IJogoService
         var generos = idsGeneros.Distinct().ToList();
         await ValidarReferenciasAsync(jogo, generos);
 
-        jogo.Nome = jogo.Nome.Trim();
+        NormalizarTextos(jogo);
         jogo.DataCadastro = existente.DataCadastro;
 
         var transactionOptions = new TransactionOptions
@@ -113,6 +113,13 @@ public class JogoService(IRepositorySet repositorio) : IJogoService
 
         // RN03: o jogo nunca é apagado; só deixa de estar ativo.
         await repositorio.Jogo.DesativarAsync(id);
+    }
+
+    // Remove espaços das pontas; descrição em branco é gravada como NULL (coluna opcional).
+    private static void NormalizarTextos(Jogo jogo)
+    {
+        jogo.Nome = jogo.Nome.Trim();
+        jogo.Descricao = string.IsNullOrWhiteSpace(jogo.Descricao) ? null : jogo.Descricao.Trim();
     }
 
     // RN05: plataforma, condição e ao menos um gênero precisam existir.
