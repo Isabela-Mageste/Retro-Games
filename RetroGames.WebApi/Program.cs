@@ -1,4 +1,5 @@
 using FluentValidation;
+using RetroGames.Services;
 using RetroGames.WebApi.Configuration;
 using RetroGames.WebApi.Filters;
 using RetroGames.WebApi.Middlewares;
@@ -33,7 +34,34 @@ builder.Services.AddOpenApi();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
 
+var adminEmail = builder.Configuration["AdminInicial:Email"];
+var adminSenha = builder.Configuration["AdminInicial:Senha"];
+if (string.IsNullOrWhiteSpace(adminEmail) || string.IsNullOrWhiteSpace(adminSenha))
+{
+    Console.Error.WriteLine(
+        "Administrador inicial não configurado: faltam as linhas AdminInicial__Email e AdminInicial__Senha no arquivo .env. " +
+        "Confira o modelo .env.example.");
+    return 1;
+}
+
 var app = builder.Build();
+
+// Cria o primeiro administrador, se ainda não existir nenhum. A senha nunca vai para o log.
+using (var escopo = app.Services.CreateScope())
+{
+    var autenticacaoService = escopo.ServiceProvider.GetRequiredService<IAutenticacaoService>();
+    try
+    {
+        await autenticacaoService.GarantirAdministradorInicialAsync(adminEmail, adminSenha);
+    }
+    catch (Exception excecao)
+    {
+        app.Logger.LogCritical(excecao,
+            "Não foi possível garantir o administrador inicial. Confira se o MySQL está em execução " +
+            "e se a connection string do .env aponta para o banco do RetroGames.");
+        return 1;
+    }
+}
 
 // 2. Pipeline (a ordem importa)
 app.UseExceptionHandler(); // primeira etapa: exceções → envelope de erro

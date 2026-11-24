@@ -8,5 +8,7 @@
     <ProjectReference Include="../RetroGames.Model/RetroGames.Model.csproj" />
     <ProjectReference Include="../RetroGames.Repository/RetroGames.Repository.csproj" />
     <ProjectReference Include="../RetroGames.WebApi.ApiModels/RetroGames.WebApi.ApiModels.csproj" />
+    <!-- PasswordHasher (Espec. 2): só o núcleo do Identity, sem nada de HTTP. -->
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="10.0.0" />
   </ItemGroup>
 </Project>
