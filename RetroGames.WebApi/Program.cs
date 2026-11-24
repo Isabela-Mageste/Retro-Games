@@ -22,6 +22,7 @@ if (string.IsNullOrWhiteSpace(connectionString))
 // 1. Serviços (injeção de dependência)
 builder.Services.AddRepositorios(connectionString);
 builder.Services.AddServicosDeNegocio();
+builder.Services.AddAutenticacaoPorCookie(builder.Environment);
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddControllers(opcoes =>
     {
@@ -72,6 +73,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI(opcoes => opcoes.SwaggerEndpoint("/openapi/v1.json", "RetroGames"));
 }
 
+app.UseAuthentication(); // lê o cookie: quem é você?
+app.UseAuthorization();  // políticas: você pode?
 app.MapControllers();
 
 await app.RunAsync();
