@@ -1,0 +1,11 @@
+/* Ajustes visuais complementares ao Bootstrap. */
+
+.card-jogo {
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.card-jogo:hover,
+.card-jogo:focus-within {
+  transform: translateY(-2px);
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.12);
+}
