@@ -1,4 +1,6 @@
+using FluentValidation;
 using RetroGames.WebApi.Configuration;
+using RetroGames.WebApi.Filters;
 using RetroGames.WebApi.Middlewares;
 
 // Lê o .env da raiz do repositório (procurando nas pastas acima) e publica cada linha
@@ -19,7 +21,14 @@ if (string.IsNullOrWhiteSpace(connectionString))
 // 1. Serviços (injeção de dependência)
 builder.Services.AddRepositorios(connectionString);
 builder.Services.AddServicosDeNegocio();
-builder.Services.AddControllers();
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+builder.Services.AddControllers(opcoes =>
+    {
+        // O FluentValidation é o único responsável pelo formato da entrada.
+        opcoes.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+        opcoes.Filters.Add<FluentValidationFilter>();
+    })
+    .ConfigureApiBehaviorOptions(ValidacaoConfig.ConfigurarRespostaDeModeloInvalido);
 builder.Services.AddOpenApi();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
