@@ -18,6 +18,14 @@ dotnet test RetroGames.sln
 | `GeneroServiceTests` | Listar devolve os gêneros do Repository |
 | `CondicaoJogoServiceTests` | Listar devolve as condições do Repository |
 
+## Desafio: Módulo de Compras
+
+| Classe | Cenários |
+|---|---|
+| `PedidoServiceTests` | Jogo inexistente e jogo inativo (110, sem gravar); estoque insuficiente (111, com o nome do jogo, sem gravar); estoque que acaba durante a transação (111, sem `Complete()`); preço enviado pelo front é ignorado e o total usa o preço do banco; caminho feliz (Pendente, data UTC, usuário da sessão, itens e baixa de estoque); Meus pedidos só do usuário logado, na ordem do repositório; sem pedidos não consulta itens |
+| `AutenticacaoServiceTests` | Cadastro com e-mail já usado (106, sem gravar); duplicidade recusada pelo banco (106); cadastro novo cria Cliente ativo com senha em hash |
+| `PedidoValidatorsTests`, `AutenticacaoValidatorsTests` | Pedido sem itens, quantidade fora de 1 a 10, jogo repetido; regras da senha no cadastro |
+
 ## Demais camadas
 
 | Pasta | Classe | O que verifica |

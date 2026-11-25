@@ -8,6 +8,7 @@
 #
 # O script cria e exclui duas plataformas de teste. Ele também inclui o jogo "Contra"
 # e o desativa no fim (RN03: jogo nunca é apagado); rodá-lo de novo cria outro.
+# Na parte do desafio, cadastra um cliente novo e compra 1 unidade do jogo 9 (baixa o estoque).
 RAIZ="$(cd "$(dirname "$0")/.." && pwd)"; B=http://localhost:5080/api
 T="$(mktemp -d)"; C="$T/cookie.txt"; trap 'rm -rf "$T"' EXIT
 SENHA=$(grep AdminInicial__Senha "$RAIZ/.env" | cut -d'"' -f2)
@@ -120,6 +121,44 @@ echo "--- Aula 6 (logout)"
 chk "POST logout" 200 0 -X POST $B/Autenticacao/logout
 chk "GET eu depois do logout" 401 4 $B/Autenticacao/eu
 chk "jogo desativado sem login" 404 103 $B/Jogo/$JID
+
+echo "--- Desafio: Módulo de Compras (C01, C04 e C05)"
+rm -f "$C"
+json '{"itens":[{"idJogo":9,"quantidade":1}]}'
+chk "POST /api/Pedido sem login" 401 4 "${J[@]}" -X POST $B/Pedido --data-binary @"$T/b.json"
+chk "GET /api/Pedido/meus sem login" 401 4 $B/Pedido/meus
+json '{"nome":"Teste","email":"nao-e-email","senha":"curta"}'
+chk "cadastro com e-mail e senha inválidos" 400 3 "${J[@]}" -X POST $B/Autenticacao/cadastrar --data-binary @"$T/b.json"
+EMAIL="conferencia.$(date +%s)$RANDOM@retrogames.local"
+json "{\"nome\":\"Cliente Conferência\",\"email\":\"$EMAIL\",\"senha\":\"retro2026\"}"
+chk "cadastro de cliente (já entra logado)" 201 0 "${J[@]}" -X POST $B/Autenticacao/cadastrar --data-binary @"$T/b.json"
+grep -q '"perfil":"Cliente"' "$T/r.json" && { OK=$((OK+1)); echo "OK     perfil Cliente"; } || { FALHA=$((FALHA+1)); echo "FALHA  perfil do cadastro"; }
+chk "GET eu logo após o cadastro" 200 0 $B/Autenticacao/eu
+chk "cadastro com e-mail repetido" 409 106 "${J[@]}" -X POST $B/Autenticacao/cadastrar --data-binary @"$T/b.json"
+json '{"itens":[]}'
+chk "pedido sem itens" 400 3 "${J[@]}" -X POST $B/Pedido --data-binary @"$T/b.json"
+json '{"itens":[{"idJogo":9,"quantidade":11}]}'
+chk "pedido com quantidade 11" 400 3 "${J[@]}" -X POST $B/Pedido --data-binary @"$T/b.json"
+json '{"itens":[{"idJogo":24,"quantidade":1}]}'
+chk "pedido com jogo inativo" 400 110 "${J[@]}" -X POST $B/Pedido --data-binary @"$T/b.json"
+json '{"itens":[{"idJogo":99999,"quantidade":1}]}'
+chk "pedido com jogo inexistente" 400 110 "${J[@]}" -X POST $B/Pedido --data-binary @"$T/b.json"
+ESTOQUE=$(curl -s $B/Jogo/9 | grep -o '"estoque":[0-9]*' | cut -d: -f2)
+json "{\"itens\":[{\"idJogo\":9,\"quantidade\":$((ESTOQUE + 1))}]}"
+if [[ $((ESTOQUE + 1)) -le 10 ]]; then
+  chk "pedido acima do estoque" 409 111 "${J[@]}" -X POST $B/Pedido --data-binary @"$T/b.json"
+fi
+if [[ "$ESTOQUE" -ge 1 ]]; then
+  json '{"itens":[{"idJogo":9,"quantidade":1}]}'
+  chk "pedido válido" 201 0 "${J[@]}" -X POST $B/Pedido --data-binary @"$T/b.json"
+  grep -q '"situacao":"Pendente"' "$T/r.json" && { OK=$((OK+1)); echo "OK     pedido nasce Pendente"; } || { FALHA=$((FALHA+1)); echo "FALHA  situação inicial"; }
+  DEPOIS=$(curl -s $B/Jogo/9 | grep -o '"estoque":[0-9]*' | cut -d: -f2)
+  [[ "$DEPOIS" -eq $((ESTOQUE - 1)) ]] && { OK=$((OK+1)); echo "OK     estoque baixado ($ESTOQUE -> $DEPOIS)"; } || { FALHA=$((FALHA+1)); echo "FALHA  baixa de estoque"; }
+  chk "GET /api/Pedido/meus" 200 0 $B/Pedido/meus
+  [[ $(grep -o '"id":[0-9]*,"dataPedido"' "$T/r.json" | wc -l) -eq 1 ]] && { OK=$((OK+1)); echo "OK     só o pedido deste cliente"; } || { FALHA=$((FALHA+1)); echo "FALHA  meus pedidos"; }
+else
+  echo "AVISO  jogo 9 sem estoque: compra válida não conferida (reponha o estoque no banco)"
+fi
 
 echo "=== RESULTADO: $OK OK, $FALHA FALHA"
 [[ $FALHA -eq 0 ]]

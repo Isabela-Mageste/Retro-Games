@@ -14,6 +14,11 @@ o professor.
 | US06 | Autenticação e autorização | Concluído | Login, logout, eu, cookie HttpOnly/SameSite=Strict, hash de senha, FallbackPolicy e SomenteAdministrador (Aula 6); login, menu e rotas protegidas no site (Aula 8). |
 | T01 | Testes unitários dos Services | Concluído | PlataformaServiceTests, JogoServiceTests, GeneroServiceTests e CondicaoJogoServiceTests (Aula 9). |
 | T02 | Identidade visual e responsividade | Concluído | Tema escuro rosa e azul, celular e computador, heurísticas de Nielsen (`docs/INTERFACE.md`). |
+| C01 | Cadastro de cliente | Concluído | Nome, e-mail válido e senha; perfil Cliente, senha em hash; e-mail repetido 409/106; a sessão começa após o cadastro. |
+| C02 | Cliente logado | Concluído | Menu com Carrinho e Meus pedidos; sem Administração. |
+| C03 | Carrinho | Concluído | Adicionar pelo detalhe (não esgotado), quantidade de 1 a 10, remover, total; localStorage. |
+| C04 | Finalizar compra | Concluído | 401/4 sem sessão; 400/3; 400/110; 409/111; preço do banco; Pendente em UTC; tudo numa transação. |
+| C05 | Meus pedidos | Concluído | Só os pedidos do cliente, do mais recente ao mais antigo, com situação, total e itens. |
 
 ## Histórico
 
@@ -24,3 +29,4 @@ o professor.
 - Aula 7: front-end público (catálogo e detalhe).
 - Aula 8: login e administração no front-end; identidade visual.
 - Aula 9: testes unitários de todos os Services.
+- Desafio (versão básica): Módulo de Compras, C01 a C05 (`docs/SPRINT.md`, `docs/ESPECIFICACAO_COMPRAS.md`).

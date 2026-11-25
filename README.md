@@ -14,6 +14,7 @@ seguindo a especificação **RetroGames — Arquitetura e Stack** e os roteiros 
 | 7 | Front-end React: catálogo e detalhe do jogo | `docs/AULAS_3_A_7.md` |
 | 8 | Front-end: login, menu, rotas protegidas e administração | `docs/AULAS_8_E_9.md` |
 | 9 | Testes unitários dos Services (xUnit + Moq) | `docs/AULAS_8_E_9.md` |
+| Desafio | Módulo de Compras, versão básica: cadastro, carrinho, finalizar compra e Meus pedidos (C01 a C05) | `docs/ESPECIFICACAO_COMPRAS.md`, `docs/SPRINT.md` |
 
 Interface (identidade visual, celular e heurísticas de Nielsen): `docs/INTERFACE.md`. Planejamento da sprint:
 `docs/SPRINT.md`.
@@ -51,8 +52,14 @@ Essa mensagem significa que o front-end não alcançou a API. Confira, na ordem:
 
 ## 1. Banco de dados
 
-No MySQL Workbench, crie um schema vazio (por exemplo `retrogames`, charset utf8mb4) e execute, nesta ordem,
-`database/001_estrutura.sql` e `database/002_dados_exemplo.sql`.
+No MySQL Workbench, crie um schema vazio (por exemplo `retrogames`, charset utf8mb4) e execute, nesta ordem:
+
+1. `database/001_estrutura.sql` e `database/002_dados_exemplo.sql` (tabelas e dados das aulas);
+2. `database/009_descricoes_jogos.sql` (descrições dos jogos de exemplo);
+3. `database/010_estrutura_compras.sql` e `database/011_dados_compras.sql` (Módulo de Compras).
+
+Já tem o banco das aulas anteriores? Rode só os que faltam (009, 010 e 011), uma vez cada. Os scripts `007`,
+`008` e `012` só conferem o SQL dos repositórios e desfazem as gravações no final.
 
 ## 2. Arquivo .env
 
@@ -82,8 +89,8 @@ npm install
 npm run dev
 ```
 
-Abra http://localhost:5173. Para administrar, clique em **Entrar** e use o e-mail e a senha de `AdminInicial`
-do seu `.env`. O Vite repassa `/api` para a porta 5080, então front-end e API têm a mesma origem
+Abra http://localhost:5173. Para comprar, clique em **Entrar → Criar conta**. Para administrar, entre com o
+e-mail e a senha de `AdminInicial` do seu `.env`. O Vite repassa `/api` para a porta 5080, então front-end e API têm a mesma origem
 (sem CORS, com o cookie `SameSite=Strict`).
 
 ## 5. Testes e build
