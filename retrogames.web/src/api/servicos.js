@@ -22,6 +22,12 @@ export const jogoApi = {
   desativar: (id) => api.delete(`/Jogo/${id}`).then(dados),
 };
 
+// Desafio, Módulo de Compras. itens: [{ idJogo, quantidade }]; o preço vem do banco.
+export const pedidoApi = {
+  finalizar: (itens) => api.post('/Pedido', { itens }).then(dados),
+  meus: () => api.get('/Pedido/meus').then(dados),
+};
+
 export const plataformaApi = {
   listar: () => api.get('/Plataforma').then(dados),
   inserir: (plataforma) => api.post('/Plataforma', plataforma).then(dados),
