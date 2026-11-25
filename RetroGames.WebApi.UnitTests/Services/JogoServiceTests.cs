@@ -71,6 +71,20 @@ public class JogoServiceTests
     }
 
     [Fact]
+    public async Task Listar_SemGenero_NaoConsultaVinculosNemRestringeIds()
+    {
+        // Arrange
+        ConfigurarListagem();
+
+        // Act
+        await CriarService().ListarAsync(new ListarJogoFiltroServiceModel());
+
+        // Assert: sem gênero, a lista de ids chega nula (filtro desligado) e os vínculos não são lidos
+        _jogoGeneros.Verify(r => r.ListarTodosAsync(It.IsAny<CancellationToken>()), Times.Never);
+        _jogos.Verify(r => r.ListarAsync(null, null, null, false, 1, 12, It.IsAny<CancellationToken>()), Times.Once);
+    }
+
+    [Fact]
     public async Task Listar_IncluirInativosSemSerAdministrador_ListaSoAtivos()
     {
         _usuarioAtual.Setup(u => u.EhAdministrador).Returns(false);
@@ -109,6 +123,19 @@ public class JogoServiceTests
     }
 
     [Fact]
+    public async Task BuscarPorId_IdInexistente_LancaJogoNaoEncontrado()
+    {
+        // Arrange
+        _jogos.Setup(r => r.BuscarPorIdAsync(9999, It.IsAny<CancellationToken>())).ReturnsAsync((Jogo?)null);
+
+        // Act
+        var erro = await Assert.ThrowsAsync<BusinessRuleException>(() => CriarService().BuscarPorIdAsync(9999));
+
+        // Assert
+        Assert.Equal(BusinessErrors.JOGO_NAO_ENCONTRADO, erro.Erro);
+    }
+
+    [Fact]
     public async Task BuscarPorId_InativoSemSerAdministrador_LancaJogoNaoEncontrado()
     {
         _jogos.Setup(r => r.BuscarPorIdAsync(24, It.IsAny<CancellationToken>())).ReturnsAsync(NovoJogo(24, ativo: false));
@@ -138,6 +165,7 @@ public class JogoServiceTests
         var erro = await Assert.ThrowsAsync<BusinessRuleException>(() => CriarService().InserirAsync(jogo, [1]));
 
         Assert.Equal(BusinessErrors.PLATAFORMA_NAO_ENCONTRADA, erro.Erro);
+        _jogos.Verify(r => r.InserirAsync(It.IsAny<Jogo>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -149,6 +177,7 @@ public class JogoServiceTests
         var erro = await Assert.ThrowsAsync<BusinessRuleException>(() => CriarService().InserirAsync(jogo, [1]));
 
         Assert.Equal(BusinessErrors.CONDICAO_NAO_ENCONTRADA, erro.Erro);
+        _jogos.Verify(r => r.InserirAsync(It.IsAny<Jogo>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
@@ -184,6 +213,7 @@ public class JogoServiceTests
         var erro = await Assert.ThrowsAsync<BusinessRuleException>(() => CriarService().DesativarAsync(9999));
 
         Assert.Equal(BusinessErrors.JOGO_NAO_ENCONTRADO, erro.Erro);
+        _jogos.Verify(r => r.DesativarAsync(It.IsAny<int>(), It.IsAny<CancellationToken>()), Times.Never);
     }
 
     [Fact]
