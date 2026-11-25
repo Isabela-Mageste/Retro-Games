@@ -1,119 +1,231 @@
 # RetroGames
 
-Loja web de jogos retrô usados — Módulo de Catálogo e Administração. Projeto do curso, construído aula a aula
-seguindo a especificação **RetroGames — Arquitetura e Stack** e os roteiros do estudante.
+Loja web de jogos retrô usados. Visitantes navegam pelo catálogo, clientes compram e acompanham seus pedidos, e
+o administrador mantém plataformas e jogos. O sistema tem três partes: uma SPA em React, uma API REST em
+ASP.NET Core e um banco MySQL.
 
-| Aula | Conteúdo | Guia |
-|---|---|---|
-| 1 | Banco de dados, solução .NET, modelos | `docs/VALIDACAO.md` |
-| 2 | Repository (ADO.NET + MySqlConnector) | `docs/AULA2.md` |
-| 3 | Service: regras de negócio, LINQ e transações | `docs/AULAS_3_A_7.md` |
-| 4 | API de leitura, envelope e tratamento global de erros | `docs/AULAS_3_A_7.md` |
-| 5 | Validação (FluentValidation) e gravação | `docs/AULAS_3_A_7.md` |
-| 6 | Login com cookie, hash de senha e autorização | `docs/AULAS_3_A_7.md` |
-| 7 | Front-end React: catálogo e detalhe do jogo | `docs/AULAS_3_A_7.md` |
-| 8 | Front-end: login, menu, rotas protegidas e administração | `docs/AULAS_8_E_9.md` |
-| 9 | Testes unitários dos Services (xUnit + Moq) | `docs/AULAS_8_E_9.md` |
-| Desafio | Módulo de Compras, versão básica: cadastro, carrinho, finalizar compra e Meus pedidos (C01 a C05) | `docs/ESPECIFICACAO_COMPRAS.md`, `docs/SPRINT.md` |
+## O que o sistema faz
 
-Interface (identidade visual, celular e heurísticas de Nielsen): `docs/INTERFACE.md`. Planejamento da sprint:
-`docs/SPRINT.md`.
+**Visitante**
+- Catálogo com busca por nome, filtros por plataforma e gênero e paginação. Os filtros ficam na URL, então o
+  link pode ser compartilhado e o botão Voltar funciona.
+- Detalhe do jogo: capa, plataforma, ano, gêneros, descrição, condição, estoque e preço.
+- Só jogos ativos aparecem.
 
-## Pré-requisitos
+**Cliente**
+- Cria a conta e já entra logado.
+- Monta o carrinho a partir do detalhe do jogo (quantidade de 1 a 10, sem passar do estoque). Jogo esgotado não
+  pode ser adicionado.
+- Finaliza a compra: o pedido nasce **Pendente** e o estoque é baixado.
+- Vê em **Meus pedidos** cada pedido com data, situação, total e itens.
 
-.NET SDK 10, Node.js 22 LTS (22.12 ou superior) e MySQL 8 em execução.
+**Administrador**
+- Inclui, altera e exclui plataformas. Uma plataforma com jogos não pode ser excluída.
+- Inclui e altera jogos com seus gêneros, e desativa jogos (o jogo sai do catálogo, mas continua cadastrado e
+  pode ser reativado).
+- Vê também os jogos inativos na administração.
 
-```sh
-dotnet --version
-node -v
+## Tecnologias
+
+| Parte | Tecnologia |
+|---|---|
+| API | .NET 10, ASP.NET Core (controllers), FluentValidation, OpenAPI + Swagger UI |
+| Acesso a dados | ADO.NET com MySqlConnector, SQL parametrizado |
+| Banco | MySQL 8 |
+| Front-end | React 19, Vite, React Router, Bootstrap 5, Axios |
+| Testes | xUnit v3 e Moq |
+
+## Arquitetura
+
+```
+React (5173) ──/api──▶ Controller ─▶ Service ─▶ Repository ─▶ MySQL
+                        (HTTP)       (regras)     (SQL)
 ```
 
-## Início rápido (Windows)
+- **Controller:** recebe a requisição, chama o Service e responde no envelope. Não tem regra nem SQL.
+- **Validator:** confere o formato da entrada (campos obrigatórios, tamanhos, faixas).
+- **Service:** aplica as regras de negócio, abre transações e combina dados de várias tabelas com LINQ.
+- **Repository:** um por tabela; cada consulta lê uma única tabela, com parâmetros, filtros e paginação no SQL.
 
-Com o banco criado (passo 1) e o `.env` preenchido (passo 2), dê dois cliques em **`iniciar.cmd`**, na raiz.
-Ele sobe, nesta ordem, o MySQL (se ainda não estiver rodando), a API e o front-end, cada um na sua janela, e
-abre http://localhost:5173. Para parar, feche as três janelas. Os passos 3 e 4 abaixo fazem o mesmo à mão.
+| Pasta | Conteúdo |
+|---|---|
+| `RetroGames.Model` | Uma classe por tabela e constantes (perfis, condições, situações de pedido) |
+| `RetroGames.Repository` | Repositórios ADO.NET e o conjunto `IRepositorySet` |
+| `RetroGames.Services` | Services, ServiceModels e o catálogo de erros de negócio |
+| `RetroGames.WebApi.ApiModels` | Modelos de entrada e saída da API, envelope e códigos de resposta |
+| `RetroGames.WebApi` | Controllers, validators, mappers, autenticação e tratamento global de erros |
+| `RetroGames.WebApi.UnitTests` | Testes unitários |
+| `retrogames.web` | Front-end React |
+| `database` | Scripts SQL numerados |
+| `docs` | Documentação complementar |
 
-### "Não foi possível conectar ao servidor." em todas as telas
+## Como executar
 
-Essa mensagem significa que o front-end não alcançou a API. Confira, na ordem:
+### Pré-requisitos
 
-1. **O MySQL está rodando?** A API não sobe sem o banco: ela para na subida ao criar o administrador inicial.
-2. **A API está no ar?** Abra http://localhost:5080/swagger. Se não abrir, veja a mensagem na janela da API
-   (falta de linha no `.env`, banco fora do ar, porta 5080 ocupada).
-3. **O front-end foi aberto pelo Vite (`npm run dev`)?** Abrir os arquivos de `dist/` direto não funciona: o
-   repasse de `/api` para a porta 5080 é feito pelo servidor do Vite.
-4. **`dotnet` ou `npm` "não é reconhecido"?** As ferramentas não estão no PATH; use o `iniciar.cmd`, que as
-   procura também nas pastas de instalação por usuário.
-5. **No PowerShell, `npm` diz que "a execução de scripts foi desabilitada"?** É a política de scripts padrão do
-   Windows bloqueando o `npm.ps1`. Use `npm.cmd` no lugar de `npm` (por exemplo, `npm.cmd run dev`), rode no
-   Prompt de Comando ou no Git Bash, ou libere scripts locais só para o seu usuário com
-   `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser`.
+.NET SDK 10, Node.js 22 LTS e MySQL 8 em execução.
 
-## 1. Banco de dados
+### 1. Banco de dados
 
-No MySQL Workbench, crie um schema vazio (por exemplo `retrogames`, charset utf8mb4) e execute, nesta ordem:
+Crie um schema vazio (por exemplo `retrogames`, charset utf8mb4) e execute, nesta ordem:
 
-1. `database/001_estrutura.sql` e `database/002_dados_exemplo.sql` (tabelas e dados das aulas);
-2. `database/009_descricoes_jogos.sql` (descrições dos jogos de exemplo);
-3. `database/010_estrutura_compras.sql` e `database/011_dados_compras.sql` (Módulo de Compras).
+| Script | O que faz |
+|---|---|
+| `database/001_estrutura.sql` | Tabelas do catálogo e dos usuários |
+| `database/002_dados_exemplo.sql` | 7 plataformas, 8 gêneros, 24 jogos, condições e perfis |
+| `database/009_descricoes_jogos.sql` | Descrição de cada jogo de exemplo |
+| `database/010_estrutura_compras.sql` | Tabelas de pedido, itens e situações |
+| `database/011_dados_compras.sql` | Situações: Pendente, Pago, Enviado e Cancelado |
 
-Já tem o banco das aulas anteriores? Rode só os que faltam (009, 010 e 011), uma vez cada. Os scripts `007`,
-`008` e `012` só conferem o SQL dos repositórios e desfazem as gravações no final.
-
-## 2. Arquivo .env
+### 2. Configurar a conexão (`.env`)
 
 Copie `.env.example` para `.env`, na raiz do repositório, e preencha:
 
-- `ConnectionStrings__Default`: servidor, porta, schema, usuário e senha do seu MySQL (`database/006_consultar_conexao.sql` mostra esses dados);
-- `AdminInicial__Email` e `AdminInicial__Senha`: o administrador criado na primeira subida da API.
+| Variável | Valor |
+|---|---|
+| `ConnectionStrings__Default` | Servidor, porta, schema, usuário e senha do seu MySQL. `database/006_consultar_conexao.sql` mostra servidor, porta, usuário e schema |
+| `AdminInicial__Email` | E-mail do administrador, criado na primeira vez que a API sobe |
+| `AdminInicial__Senha` | Senha desse administrador |
 
-O `.env` está no `.gitignore` e nunca vai para o GitHub (`git check-ignore .env` deve mostrar `.env`).
+O `.env` fica fora do Git (`.gitignore`); o repositório guarda só o modelo, sem senhas. Se faltar uma dessas
+linhas, a API não sobe e diz qual falta.
 
-## 3. API
+### 3. API
 
-```sh
+```bash
 dotnet run --project RetroGames.WebApi
 ```
 
-A API responde em http://localhost:5080 e o Swagger fica em http://localhost:5080/swagger. Se faltar alguma
-linha no `.env`, a API para na subida explicando o que falta.
+Responde em http://localhost:5080. O Swagger fica em http://localhost:5080/swagger.
 
-## 4. Front-end
+### 4. Front-end
 
-Em outro terminal:
-
-```sh
+```bash
 cd retrogames.web
 npm install
 npm run dev
 ```
 
-Abra http://localhost:5173. Para comprar, clique em **Entrar → Criar conta**. Para administrar, entre com o
-e-mail e a senha de `AdminInicial` do seu `.env`. O Vite repassa `/api` para a porta 5080, então front-end e API têm a mesma origem
-(sem CORS, com o cookie `SameSite=Strict`).
+Abra http://localhost:5173. O Vite repassa `/api` para a porta 5080, então site e API ficam na mesma origem.
 
-## 5. Testes e build
+- **Comprar:** Entrar → Criar conta.
+- **Administrar:** Entrar com o e-mail e a senha de `AdminInicial`.
 
-```sh
-dotnet build RetroGames.sln
+### 5. Testes
+
+```bash
 dotnet test RetroGames.sln
-cd retrogames.web && npm run build
 ```
 
-Com o banco e a API no ar, `bash docs/conferencia_api.sh` (Git Bash) provoca cada resposta pedida nos
-roteiros das Aulas 4 a 6 e mostra OK ou FALHA para o status e o `responseCode` de cada uma. No Workbench,
-`database/007_verificar_repository.sql` (Aula 2) e `database/008_verificar_usuario.sql` (Aula 6) conferem
-o SQL dos repositórios, desfazendo as gravações no final.
+No Windows, depois dos passos 1 e 2, o `iniciar.cmd` faz os passos 3 e 4 de uma vez (veja "Funcionalidades extras").
 
-## Rotas da API
+## API
+
+Toda resposta usa o mesmo envelope:
+
+```json
+{ "responseCode": 0, "data": { }, "errorMessage": null }
+```
 
 | Método | Rota | Acesso |
 |---|---|---|
-| POST | `/api/Autenticacao/login` | Público |
-| POST | `/api/Autenticacao/logout`, GET `/api/Autenticacao/eu` | Autenticado |
-| GET | `/api/Plataforma`, `/api/Plataforma/{id}`, `/api/Genero`, `/api/CondicaoJogo`, `/api/Jogo`, `/api/Jogo/{id}` | Público |
+| POST | `/api/Autenticacao/login`, `/api/Autenticacao/cadastrar` | Público |
+| POST | `/api/Autenticacao/logout` | Logado |
+| GET | `/api/Autenticacao/eu` | Logado |
+| GET | `/api/Plataforma`, `/api/Plataforma/{id}` | Público |
+| GET | `/api/Genero`, `/api/CondicaoJogo` | Público |
+| GET | `/api/Jogo` (busca, idPlataforma, idGenero, pagina, tamanhoPagina, incluirInativos), `/api/Jogo/{id}` | Público |
 | POST, PUT, DELETE | `/api/Plataforma`, `/api/Jogo` | Administrador |
+| POST | `/api/Pedido` | Logado |
+| GET | `/api/Pedido/meus` | Logado |
 
-Toda resposta usa o envelope `{ "responseCode", "data", "errorMessage" }`. Os códigos 0–6 estão em
-`RetroGames.WebApi.ApiModels/ResponseCodes.cs` e os erros de negócio 100–105 em `RetroGames.Services/BusinessErrors.cs`.
+### Códigos de resposta
+
+| Código | Status | Significado |
+|---|---|---|
+| 0 | 200 / 201 | Sucesso |
+| 1 | 500 | Erro inesperado (detalhes só no log da API) |
+| 2 / 3 | 400 | Corpo vazio / dados inválidos (com os erros por campo em `data`) |
+| 4 / 5 | 401 / 403 | Sem login / sem permissão |
+| 6 | 401 | E-mail ou senha inválidos |
+| 100 / 103 / 104 / 105 | 404 | Plataforma / jogo / condição / gênero não encontrado |
+| 101 | 409 | Nome de plataforma repetido |
+| 102 | 409 | Plataforma com jogos não pode ser excluída |
+| 106 | 409 | E-mail já cadastrado |
+| 110 | 400 | Jogo indisponível para venda |
+| 111 | 409 | Estoque insuficiente |
+
+## Regras de negócio
+
+- Nome de plataforma é único; plataforma com jogos não pode ser excluída.
+- Jogo nunca é apagado: a exclusão só o desativa. Visitantes e clientes veem apenas jogos ativos.
+- Todo jogo tem plataforma, condição e ao menos um gênero existentes. O preço é maior que zero, o estoque não é
+  negativo e o ano fica entre 1970 e 2100.
+- E-mail de usuário é único; a senha tem pelo menos 8 caracteres, com letra e número.
+- Pedido: de 1 a 10 unidades por jogo, só jogos ativos e com estoque. O preço e o total vêm do banco, nunca do
+  navegador.
+- Pedido, itens e baixa de estoque são gravados juntos: se algo falha, nada é gravado. Duas compras simultâneas
+  da última unidade não deixam o estoque negativo.
+
+## Segurança
+
+- Sessão em cookie `HttpOnly` e `SameSite=Strict`, com expiração de 2 horas renovada pelo uso. Nenhum token fica
+  no navegador.
+- Toda rota exige login, exceto as públicas; as rotas de manutenção exigem o perfil Administrador.
+- Senhas guardadas só como hash (PasswordHasher).
+- Todo valor vai ao banco como parâmetro, nunca concatenado no SQL.
+- Credenciais só no `.env`, fora do Git.
+
+## Testes
+
+66 testes unitários, sem banco: os repositórios são simulados com Moq. Eles cobrem as regras de todos os Services
+(plataformas, jogos, gêneros, condições, cadastro e pedidos), os validators, um controller e o tratamento global
+de erros. Detalhes em `RetroGames.WebApi.UnitTests/README.md`.
+
+## Problemas comuns
+
+| Sintoma | Causa provável |
+|---|---|
+| "Não foi possível conectar ao servidor." em todas as telas | A API não está no ar. Confira se o MySQL está rodando e veja a mensagem na janela da API |
+| A API fecha logo ao iniciar | Falta uma linha no `.env` ou o banco está fora do ar |
+| `npm` bloqueado no PowerShell ("execução de scripts foi desabilitada") | Use `npm.cmd run dev` ou rode `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser` |
+| `dotnet` ou `npm` "não é reconhecido" | A ferramenta não está no PATH; use o `iniciar.cmd` |
+
+## Funcionalidades extras
+
+Além do escopo da loja, o projeto tem:
+
+**Na loja**
+- **Capa dos jogos:** cada jogo mostra uma capa desenhada pelo próprio site (SVG com nome, plataforma, ano e
+  gênero), sem usar imagens de terceiros. Para trocar por uma imagem real, basta colocar o arquivo em
+  `retrogames.web/public/capas/` e registrá-lo em `capas.json`, com o crédito exigido pela licença (instruções
+  em `public/capas/LEIA-ME.md`). Se a imagem faltar ou não carregar, a capa desenhada volta automaticamente.
+- **Descrições e ano em destaque** no detalhe de cada jogo de exemplo.
+- **Carrinho mais seguro de usar:** botão **Desfazer** ao remover um item; resumo e confirmação antes de gravar o
+  pedido; preço e estoque conferidos de novo com a API ao abrir o carrinho; carrinho igual entre abas abertas.
+- **Mensagens específicas:** "Estoque insuficiente para Tetris." em vez de uma mensagem genérica, com a
+  quantidade já ajustada ao estoque real.
+- **Cadastro guiado:** as regras da senha são marcadas enquanto se digita, com botão para mostrar a senha e campo
+  de confirmação.
+- **Identidade visual própria:** tema escuro rosa e azul, fonte pixel no logotipo e ícone próprio. Funciona do
+  celular (360 px) ao computador. Detalhes em `docs/INTERFACE.md`.
+- **Acessibilidade:** link "Pular para o conteúdo", foco visível ao navegar pelo teclado, mensagens anunciadas a
+  leitores de tela e contraste conferido.
+
+**Para executar e conferir**
+- **`iniciar.cmd` (Windows):** sobe o MySQL (se necessário), a API e o front-end, cada um na sua janela, e abre
+  o site. Ele encontra as ferramentas mesmo fora do PATH.
+- **`docs/conferencia_api.sh`:** com a API no ar, executa 78 verificações de status e código de resposta
+  (catálogo, gravação, login, permissões, cadastro e compras) e mostra OK ou FALHA para cada uma.
+- **Scripts de conferência SQL** (`database/007`, `008` e `012`): executam no Workbench os mesmos comandos dos
+  repositórios e desfazem tudo no final.
+
+## Documentação
+
+| Arquivo | Conteúdo |
+|---|---|
+| `docs/ESPECIFICACAO_COMPRAS.md` | Tabelas, rotas, regras e rastreabilidade do módulo de compras |
+| `docs/INTERFACE.md` | Identidade visual, responsividade e heurísticas de Nielsen |
+| `docs/SPRINT.md` | Planejamento da sprint, histórias de usuário e revisão |
+| `docs/MER.md` | Modelo entidade-relacionamento |
+| `docs/DECISOES.md` | Decisões de modelagem |
