@@ -27,6 +27,24 @@ dotnet --version
 node -v
 ```
 
+## Início rápido (Windows)
+
+Com o banco criado (passo 1) e o `.env` preenchido (passo 2), dê dois cliques em **`iniciar.cmd`**, na raiz.
+Ele sobe, nesta ordem, o MySQL (se ainda não estiver rodando), a API e o front-end, cada um na sua janela, e
+abre http://localhost:5173. Para parar, feche as três janelas. Os passos 3 e 4 abaixo fazem o mesmo à mão.
+
+### "Não foi possível conectar ao servidor." em todas as telas
+
+Essa mensagem significa que o front-end não alcançou a API. Confira, na ordem:
+
+1. **O MySQL está rodando?** A API não sobe sem o banco: ela para na subida ao criar o administrador inicial.
+2. **A API está no ar?** Abra http://localhost:5080/swagger. Se não abrir, veja a mensagem na janela da API
+   (falta de linha no `.env`, banco fora do ar, porta 5080 ocupada).
+3. **O front-end foi aberto pelo Vite (`npm run dev`)?** Abrir os arquivos de `dist/` direto não funciona: o
+   repasse de `/api` para a porta 5080 é feito pelo servidor do Vite.
+4. **`dotnet` ou `npm` "não é reconhecido"?** As ferramentas não estão no PATH; use o `iniciar.cmd`, que as
+   procura também nas pastas de instalação por usuário.
+
 ## 1. Banco de dados
 
 No MySQL Workbench, crie um schema vazio (por exemplo `retrogames`, charset utf8mb4) e execute, nesta ordem,
