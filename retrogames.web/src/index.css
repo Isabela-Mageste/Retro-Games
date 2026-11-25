@@ -259,6 +259,34 @@ h1, h2, h3, h4, h5, .titulo-secao {
   max-width: 320px;
 }
 
+/* Capa por imagem (public/capas): mesmo tamanho e proporção da capa ilustrada. */
+.capa-foto-figura {
+  display: block;
+  width: 100%;
+}
+
+.capa-foto {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 1rem;
+  background: var(--rg-superficie-2);
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.45), 0 0 0 1px var(--rg-borda);
+}
+
+.capa-miniatura .capa-foto {
+  border-radius: 0.4rem;
+  box-shadow: none;
+}
+
+.capa-credito {
+  margin-top: 0.5rem;
+  color: var(--rg-texto-suave);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
 .capa-miniatura {
   width: 56px;
   flex-shrink: 0;

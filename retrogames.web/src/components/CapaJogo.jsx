@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { obterCapa } from '../lib/capas.js';
 
-// Capa ilustrada do jogo, desenhada pelo próprio site em SVG a partir dos dados do jogo.
-// Não usa imagens de terceiros (as capas oficiais têm direitos autorais) e não exige coluna
-// nova no banco: o dicionário de dados da especificação não tem imagem em tb_jogo.
+// Capa do jogo. Se public/capas/capas.json tiver uma imagem para o jogo, ela é mostrada, com o
+// crédito exigido pela licença. Sem imagem, ou se o arquivo não carregar, aparece a capa
+// ilustrada, desenhada pelo próprio site em SVG a partir dos dados do jogo. Nada muda no banco:
+// o dicionário de dados da especificação não tem coluna de imagem em tb_jogo.
 
 // Pares de cores por plataforma, dentro da identidade rosa/azul/roxa.
 const PALETAS = [
@@ -33,7 +35,41 @@ function quebrarTitulo(nome) {
   return linhas;
 }
 
-export default function CapaJogo({ jogo, className = '' }) {
+export default function CapaJogo({ jogo, className = '', mostrarCredito = true }) {
+  const [capa, definirCapa] = useState(null);
+  const [falhou, definirFalhou] = useState(false);
+
+  useEffect(() => {
+    let ativo = true;
+    definirFalhou(false);
+    obterCapa(jogo.id).then((encontrada) => ativo && definirCapa(encontrada));
+    return () => {
+      ativo = false;
+    };
+  }, [jogo.id]);
+
+  if (capa && !falhou) {
+    return (
+      <figure className={`capa-foto-figura mb-0 ${className}`}>
+        <img
+          className="capa-foto"
+          src={capa.url}
+          alt={`Capa de ${jogo.nome}`}
+          onError={() => definirFalhou(true)}
+        />
+        {mostrarCredito && capa.credito && (
+          <figcaption className="capa-credito">
+            {capa.link ? <a href={capa.link} target="_blank" rel="noreferrer">{capa.credito}</a> : capa.credito}
+          </figcaption>
+        )}
+      </figure>
+    );
+  }
+
+  return <CapaIlustrada jogo={jogo} className={className} />;
+}
+
+function CapaIlustrada({ jogo, className }) {
   const [corA, corB] = PALETAS[(jogo.idPlataforma ?? jogo.id ?? 0) % PALETAS.length];
   const idGradiente = `capa-${jogo.id}`;
   const linhas = quebrarTitulo(jogo.nome);

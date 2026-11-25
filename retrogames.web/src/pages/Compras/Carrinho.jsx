@@ -146,7 +146,7 @@ export default function Carrinho() {
               return (
                 <li key={item.idJogo} className={`painel p-3 ${indisponivel ? 'border-danger' : ''}`}>
                   <div className="d-flex gap-3">
-                    <CapaJogo jogo={{ ...item, id: item.idJogo }} className="capa-miniatura" />
+                    <CapaJogo jogo={{ ...item, id: item.idJogo }} className="capa-miniatura" mostrarCredito={false} />
                     <div className="flex-grow-1 min-w-0">
                       <div className="d-flex flex-wrap justify-content-between gap-2">
                         <div>
