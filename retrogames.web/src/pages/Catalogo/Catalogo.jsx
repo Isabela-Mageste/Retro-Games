@@ -97,9 +97,15 @@ export default function Catalogo() {
 
   return (
     <>
-      <h1 className="h3 mb-3">Catálogo</h1>
+      <section className="destaque p-4 p-md-5 mb-4">
+        <p className="marca-retro mb-2">Press start</p>
+        <h1 className="display-6 mb-2">Catálogo de jogos retrô</h1>
+        <p className="text-body-secondary mb-0">
+          Cartuchos e discos usados, conferidos e prontos para jogar. Busque pelo nome ou filtre por console e gênero.
+        </p>
+      </section>
 
-      <form className="row g-2 align-items-end mb-4" onSubmit={aoBuscar} role="search">
+      <form className="painel row g-2 align-items-end p-3 mx-0 mb-4" onSubmit={aoBuscar} role="search" aria-label="Filtros do catálogo">
         <div className="col-12 col-md-5">
           <label htmlFor="busca" className="form-label">Buscar por nome</label>
           <div className="input-group">
@@ -169,7 +175,7 @@ export default function Catalogo() {
 
       {!carregando && !erro && resultado && resultado.itens.length > 0 && (
         <>
-          <p className="text-muted small">
+          <p className="text-body-secondary small">
             {resultado.totalItens} {resultado.totalItens === 1 ? 'jogo encontrado' : 'jogos encontrados'}
           </p>
           <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-3 mb-4">

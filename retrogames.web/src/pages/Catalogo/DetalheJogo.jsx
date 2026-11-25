@@ -63,14 +63,15 @@ export default function DetalheJogo() {
   return (
     <>
       {voltar}
-      <article className="card">
-        <div className="card-body">
-          <p className="text-uppercase text-muted small mb-1">{jogo.nomePlataforma}</p>
-          <h1 className="h3 card-title">{jogo.nome}</h1>
+      <article className="card overflow-hidden">
+        <div className="capa-jogo" aria-hidden="true" />
+        <div className="card-body p-4">
+          <p className="plataforma-rotulo mb-1">{jogo.nomePlataforma}</p>
+          <h1 className="h2 card-title">{jogo.nome}</h1>
 
           <div className="d-flex flex-wrap gap-1 mb-3">
             {jogo.generos.map((genero) => (
-              <span key={genero.id} className="badge text-bg-secondary">{genero.nome}</span>
+              <span key={genero.id} className="badge rounded-pill badge-genero">{genero.nome}</span>
             ))}
           </div>
 
@@ -81,13 +82,13 @@ export default function DetalheJogo() {
             <dd className="col-sm-9">{jogo.descricaoCondicao}</dd>
             <dt className="col-sm-3">Estoque</dt>
             <dd className="col-sm-9">
-              {esgotado ? <span className="badge text-bg-warning">Esgotado</span> : `${jogo.estoque} unidade(s)`}
+              {esgotado ? <span className="badge badge-esgotado">Esgotado</span> : `${jogo.estoque} unidade(s)`}
             </dd>
           </dl>
 
           {jogo.descricao && <p className="card-text">{jogo.descricao}</p>}
 
-          <p className="fs-3 fw-semibold mb-0">{formatarPreco(jogo.preco)}</p>
+          <p className="display-6 preco mb-0">{formatarPreco(jogo.preco)}</p>
         </div>
       </article>
     </>
