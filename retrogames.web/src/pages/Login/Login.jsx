@@ -49,7 +49,7 @@ export default function Login() {
         <div className="painel p-4 p-md-5">
           <p className="marca-retro mb-2">Player 1</p>
           <h1 className="h3 mb-1">Entrar</h1>
-          <p className="text-body-secondary mb-4">Acesso da administração da loja.</p>
+          <p className="text-body-secondary mb-4">Entre para comprar e acompanhar seus pedidos.</p>
 
           {destino !== '/' && (
             <div className="alert alert-info py-2 small" role="status">
@@ -96,7 +96,11 @@ export default function Login() {
             </button>
           </form>
 
-          <p className="text-center small mt-4 mb-0">
+          <p className="text-center mt-4 mb-2">
+            Ainda não tem conta?{' '}
+            <Link to={`/cadastro${destino !== '/' ? `?voltarPara=${encodeURIComponent(destino)}` : ''}`}>Criar conta</Link>
+          </p>
+          <p className="text-center small mb-0">
             <Link to="/">Voltar ao catálogo</Link>
           </p>
         </div>

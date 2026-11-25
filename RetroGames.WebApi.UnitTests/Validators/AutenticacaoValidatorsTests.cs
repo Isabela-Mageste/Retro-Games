@@ -27,6 +27,28 @@ public class AutenticacaoValidatorsTests
     }
 
     [Fact]
+    public void Cadastrar_DadosValidos_NaoTemErros()
+    {
+        var resultado = new CadastrarRequestValidator().Validate(
+            new CadastrarRequestApiModel { Nome = "Ana", Email = "ana@exemplo.com", Senha = "senha1234" });
+
+        Assert.True(resultado.IsValid);
+    }
+
+    [Theory]
+    [InlineData("curta1")]
+    [InlineData("somenteletras")]
+    [InlineData("12345678")]
+    public void Cadastrar_SenhaForaDasRegras_TemErroNoCampoSenha(string senha)
+    {
+        var resultado = new CadastrarRequestValidator().Validate(
+            new CadastrarRequestApiModel { Nome = "Ana", Email = "ana@exemplo.com", Senha = senha });
+
+        var erro = Assert.Single(resultado.Errors);
+        Assert.Equal("Senha", erro.PropertyName);
+    }
+
+    [Fact]
     public void Login_SenhaVazia_TemErroNoCampoSenha()
     {
         var resultado = _validator.Validate(new LoginRequestApiModel { Email = "admin@retrogames.local", Senha = "" });

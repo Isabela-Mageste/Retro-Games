@@ -40,4 +40,33 @@ public class AutenticacaoService(IRepositorySet repositorio, IPasswordHasher<Usu
 
         administrador.Id = await repositorio.Usuario.InserirAsync(administrador);
     }
+
+    public async Task<Usuario> CadastrarClienteAsync(string nome, string email, string senha)
+    {
+        var cliente = new Usuario
+        {
+            Nome = nome.Trim(),
+            Email = email.Trim(),
+            Ativo = true,
+            DataCadastro = DateTime.UtcNow,
+            IdPerfil = PerfilIds.Cliente,
+        };
+
+        // A conferência dá a mensagem clara na situação comum.
+        if (await repositorio.Usuario.BuscarPorEmailAsync(cliente.Email) is not null)
+            throw new BusinessRuleException(BusinessErrors.EMAIL_JA_CADASTRADO);
+
+        cliente.SenhaHash = passwordHasher.HashPassword(cliente, senha);
+
+        try
+        {
+            cliente.Id = await repositorio.Usuario.InserirAsync(cliente);
+        }
+        catch (RegistroDuplicadoException)
+        {
+            // Dois cadastros simultâneos com o mesmo e-mail: o UNIQUE de ds_email recusou o segundo.
+            throw new BusinessRuleException(BusinessErrors.EMAIL_JA_CADASTRADO);
+        }
+        return cliente;
+    }
 }

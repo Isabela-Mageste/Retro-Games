@@ -8,7 +8,7 @@ const api = axios.create({
 });
 
 // 401 nestas rotas é resposta esperada (visitante ou senha errada), não sessão expirada.
-const ROTAS_401_ESPERADO = ['/Autenticacao/eu', '/Autenticacao/login'];
+const ROTAS_401_ESPERADO = ['/Autenticacao/eu', '/Autenticacao/login', '/Autenticacao/cadastrar'];
 
 // Qualquer outro 401 significa que a sessão acabou: o AutenticacaoProvider ouve o evento
 // e limpa o usuário da tela.

@@ -31,6 +31,21 @@ public class AutenticacaoController(IAutenticacaoService autenticacaoService) : 
         return Ok(new RetroGamesResponseApiModel<UsuarioLogadoResponseApiModel>(principal.ParaUsuarioLogado()));
     }
 
+    // C01: cadastro de cliente. Única rota nova pública; após o cadastro, a sessão já começa.
+    [HttpPost("cadastrar")]
+    [AllowAnonymous]
+    public async Task<ActionResult<RetroGamesResponseApiModel<UsuarioLogadoResponseApiModel>>> Cadastrar(
+        CadastrarRequestApiModel request)
+    {
+        var cliente = await autenticacaoService.CadastrarClienteAsync(request.Nome, request.Email, request.Senha);
+
+        var principal = cliente.ParaClaimsPrincipal();
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+        return CreatedAtAction(nameof(Eu), null,
+            new RetroGamesResponseApiModel<UsuarioLogadoResponseApiModel>(principal.ParaUsuarioLogado()));
+    }
+
     // Logout e eu: vale a política padrão (exige login).
     [HttpPost("logout")]
     public async Task<ActionResult<RetroGamesResponseApiModel>> Logout()

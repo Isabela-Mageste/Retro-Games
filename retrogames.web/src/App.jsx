@@ -7,6 +7,7 @@ import Jogos from './pages/Administracao/Jogos.jsx';
 import Plataforma from './pages/Auxiliares/Plataforma.jsx';
 import Catalogo from './pages/Catalogo/Catalogo.jsx';
 import DetalheJogo from './pages/Catalogo/DetalheJogo.jsx';
+import Cadastro from './pages/Login/Cadastro.jsx';
 import Login from './pages/Login/Login.jsx';
 import NaoEncontrada from './pages/NaoEncontrada.jsx';
 
@@ -18,6 +19,7 @@ export default function App() {
         <Route path="/" element={<Catalogo />} />
         <Route path="/jogos/:id" element={<DetalheJogo />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/cadastro" element={<Cadastro />} />
 
         <Route path="/admin" element={<RotaProtegida somenteAdministrador />}>
           <Route index element={<Navigate to="jogos" replace />} />
