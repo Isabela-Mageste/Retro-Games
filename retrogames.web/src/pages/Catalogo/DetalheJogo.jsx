@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router-dom';
 import { jogoApi } from '../../api/servicos.js';
 import { obterMensagemErro } from '../../api/erros.js';
 import CapaJogo from '../../components/CapaJogo.jsx';
+import { QUANTIDADE_MAXIMA } from '../../contexts/CarrinhoProvider.jsx';
+import useCarrinho from '../../hooks/useCarrinho.js';
 import { Carregando, MensagemErro } from '../../components/MensagensEstado.jsx';
 import { formatarPreco } from '../../lib/formato.js';
 
@@ -18,6 +20,9 @@ export default function DetalheJogo() {
   const [carregando, definirCarregando] = useState(idValido);
   const [erro, definirErro] = useState(idValido ? null : { mensagem: MENSAGEM_NAO_ENCONTRADO, naoEncontrado: true });
   const [tentativa, definirTentativa] = useState(0);
+  const { itens, adicionar } = useCarrinho();
+  const [quantidade, definirQuantidade] = useState(1);
+  const [adicionado, definirAdicionado] = useState(false);
 
   useEffect(() => {
     if (!idValido) {
@@ -60,6 +65,15 @@ export default function DetalheJogo() {
   if (!jogo) return null;
 
   const esgotado = jogo.estoque === 0;
+  const noCarrinho = itens.find((item) => item.idJogo === jogo.id)?.quantidade ?? 0;
+  // Quantidade de 1 a 10, sem passar do estoque nem do que já está no carrinho.
+  const maximo = Math.max(0, Math.min(QUANTIDADE_MAXIMA, jogo.estoque) - noCarrinho);
+
+  function aoAdicionar() {
+    adicionar(jogo, Math.min(quantidade, maximo));
+    definirAdicionado(true);
+    definirQuantidade(1);
+  }
 
   return (
     <>
@@ -97,7 +111,39 @@ export default function DetalheJogo() {
               </dd>
             </dl>
 
-            <p className="display-6 preco mb-0">{formatarPreco(jogo.preco)}</p>
+            <p className="display-6 preco mb-3">{formatarPreco(jogo.preco)}</p>
+
+            {esgotado ? (
+              <p className="text-body-secondary mb-0">Este jogo está esgotado no momento.</p>
+            ) : (
+              <div className="d-flex flex-wrap align-items-end gap-2">
+                {maximo > 0 && (
+                  <div>
+                    <label htmlFor="quantidade" className="form-label small mb-1">Quantidade</label>
+                    <select id="quantidade" className="form-select" value={quantidade}
+                      onChange={(evento) => definirQuantidade(Number(evento.target.value))}>
+                      {Array.from({ length: maximo }, (_, indice) => indice + 1).map((valor) => (
+                        <option key={valor} value={valor}>{valor}</option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                <button type="button" className="btn btn-primary btn-lg" onClick={aoAdicionar} disabled={maximo === 0}>
+                  {maximo === 0 ? 'Limite no carrinho' : 'Adicionar ao carrinho'}
+                </button>
+              </div>
+            )}
+
+            {noCarrinho > 0 && (
+              <div className={`alert ${adicionado ? 'alert-success' : 'alert-info'} d-flex flex-wrap justify-content-between align-items-center gap-2 mt-3 mb-0`}
+                role="status">
+                <span>
+                  {adicionado ? 'Adicionado ao carrinho! ' : ''}
+                  Você tem {noCarrinho} {noCarrinho === 1 ? 'unidade' : 'unidades'} deste jogo no carrinho.
+                </span>
+                <Link to="/carrinho" className="btn btn-sm btn-outline-light">Ver carrinho</Link>
+              </div>
+            )}
           </div>
         </div>
       </article>

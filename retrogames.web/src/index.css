@@ -276,6 +276,34 @@ h1, h2, h3, h4, h5, .titulo-secao {
   color: var(--rg-azul);
 }
 
+/* Carrinho e pedidos */
+.min-w-0 {
+  min-width: 0;
+}
+
+@media (min-width: 992px) {
+  .resumo-pedido {
+    position: sticky;
+    top: 5.5rem;
+  }
+}
+
+.badge-pendente {
+  color: var(--rg-texto-sobre-cor);
+  background: #fbbf24;
+}
+
+.pedido-novo {
+  border-color: var(--rg-rosa);
+  box-shadow: 0 0 0 1px var(--rg-rosa), 0 0.6rem 1.4rem rgba(255, 79, 163, 0.18);
+}
+
+.contador-carrinho {
+  color: var(--rg-texto-sobre-cor);
+  background: var(--rg-azul);
+  font-size: 0.7rem;
+}
+
 /* Destaque do catálogo */
 .destaque {
   background:
@@ -291,6 +319,12 @@ h1, h2, h3, h4, h5, .titulo-secao {
 }
 
 /* ---------- Tabelas ---------- */
+/* A legenda escondida (para leitores de tela) ficava 1px abaixo da tabela e criava uma barra de
+   rolagem vertical; a rolagem dessas caixas é só horizontal. */
+.table-responsive {
+  overflow-y: hidden;
+}
+
 .table {
   --bs-table-bg: transparent;
   --bs-table-hover-bg: rgba(255, 79, 163, 0.07);
