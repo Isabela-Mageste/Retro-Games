@@ -1,0 +1,37 @@
+using System.Net;
+
+namespace RetroGames.Services;
+
+// Catálogo dos erros de negócio (Espec. 5.3). Cada erro tem código (a partir de 100),
+// mensagem padrão e o status HTTP com que a API responde. Um código novo recebe o
+// próximo número livre.
+public static class BusinessErrors
+{
+    public static readonly (int Code, string DefaultMessage, HttpStatusCode Status) PLATAFORMA_NAO_ENCONTRADA =
+        (100, "Plataforma não encontrada.", HttpStatusCode.NotFound);
+
+    public static readonly (int Code, string DefaultMessage, HttpStatusCode Status) PLATAFORMA_NOME_DUPLICADO =
+        (101, "Já existe uma plataforma com este nome.", HttpStatusCode.Conflict);
+
+    public static readonly (int Code, string DefaultMessage, HttpStatusCode Status) PLATAFORMA_POSSUI_JOGOS =
+        (102, "Não é possível excluir: existem jogos desta plataforma.", HttpStatusCode.Conflict);
+
+    public static readonly (int Code, string DefaultMessage, HttpStatusCode Status) JOGO_NAO_ENCONTRADO =
+        (103, "Jogo não encontrado.", HttpStatusCode.NotFound);
+
+    public static readonly (int Code, string DefaultMessage, HttpStatusCode Status) CONDICAO_NAO_ENCONTRADA =
+        (104, "Condição de jogo não encontrada.", HttpStatusCode.NotFound);
+
+    public static readonly (int Code, string DefaultMessage, HttpStatusCode Status) GENERO_NAO_ENCONTRADO =
+        (105, "Gênero não encontrado.", HttpStatusCode.NotFound);
+
+    // Desafio: Módulo de Compras (versão básica). Códigos fixados no documento do desafio.
+    public static readonly (int Code, string DefaultMessage, HttpStatusCode Status) EMAIL_JA_CADASTRADO =
+        (106, "Já existe uma conta com este e-mail.", HttpStatusCode.Conflict);
+
+    public static readonly (int Code, string DefaultMessage, HttpStatusCode Status) JOGO_INDISPONIVEL =
+        (110, "Um ou mais jogos não estão disponíveis para venda.", HttpStatusCode.BadRequest);
+
+    public static readonly (int Code, string DefaultMessage, HttpStatusCode Status) ESTOQUE_INSUFICIENTE =
+        (111, "Estoque insuficiente.", HttpStatusCode.Conflict);
+}

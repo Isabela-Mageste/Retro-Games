@@ -1,24 +1,32 @@
 # Quadro de tarefas — escopo do módulo
 
-Este quadro local contém os seis cartões da seção 1.2. Na Aula 2, as cinco primeiras funcionalidades avançaram para **Em andamento**, com sua camada de acesso a dados implementada. A autenticação permanece **A fazer**. O quadro remoto ainda precisa ser criado no GitHub Projects ou Jira.
+Este quadro local contém os cartões da seção 1.2 da especificação e os itens técnicos da sprint. O quadro
+remoto (GitHub Projects) deve espelhar estes estados; veja `docs/SPRINT.md` para montá-lo e compartilhá-lo com
+o professor.
 
 | ID | Cartão | Estado | Critérios de aceite |
 |---|---|---|---|
-| US01 | Catálogo público | Em andamento | Busca textual, filtros por plataforma e gênero, paginação; apenas jogos ativos (RN04). |
-| US02 | Detalhe de jogo | Em andamento | Exibir jogo, plataforma, condição e gêneros; respeitar visibilidade (RN04). |
-| US03 | Manutenção de plataformas | Em andamento | Incluir, consultar, alterar e excluir; nome único e bloqueio de exclusão com jogos (RN01–02). |
-| US04 | Manutenção de jogos | Em andamento | Incluir e alterar, associar gêneros, validar referências/valores e excluir logicamente (RN03–06). |
-| US05 | Consulta de domínios | Em andamento | Consultar gêneros e condições de jogo. |
-| US06 | Autenticação e autorização | A fazer | Login/logout, sessão, CSRF, administrador, hash de senha e segredos (RS01–06). |
+| US01 | Catálogo público | Concluído | Busca textual, filtros por plataforma e gênero, paginação; apenas jogos ativos (RN04). API (Aula 4) e tela (Aula 7). |
+| US02 | Detalhe de jogo | Concluído | Exibir jogo, plataforma, condição e gêneros; inativo dá 404 para o público (RN04). API (Aula 4) e tela (Aula 7). |
+| US03 | Manutenção de plataformas | Concluído | API com RN01–02 e acesso só de administrador (Aulas 5 e 6); tela `/admin/plataformas` (Aula 8). |
+| US04 | Manutenção de jogos | Concluído | API com gêneros N:N, RN03, RN05 e RN06 (Aulas 5 e 6); telas `/admin/jogos` e formulário (Aula 8). |
+| US05 | Consulta de domínios | Concluído | GET de gêneros e condições de jogo (Aula 4), usados nos filtros e formulários. |
+| US06 | Autenticação e autorização | Concluído | Login, logout, eu, cookie HttpOnly/SameSite=Strict, hash de senha, FallbackPolicy e SomenteAdministrador (Aula 6); login, menu e rotas protegidas no site (Aula 8). |
+| T01 | Testes unitários dos Services | Concluído | PlataformaServiceTests, JogoServiceTests, GeneroServiceTests e CondicaoJogoServiceTests (Aula 9). |
+| T02 | Identidade visual e responsividade | Concluído | Tema escuro rosa e azul, celular e computador, heurísticas de Nielsen (`docs/INTERFACE.md`). |
+| C01 | Cadastro de cliente | Concluído | Nome, e-mail válido e senha; perfil Cliente, senha em hash; e-mail repetido 409/106; a sessão começa após o cadastro. |
+| C02 | Cliente logado | Concluído | Menu com Carrinho e Meus pedidos; sem Administração. |
+| C03 | Carrinho | Concluído | Adicionar pelo detalhe (não esgotado), quantidade de 1 a 10, remover, total; localStorage. |
+| C04 | Finalizar compra | Concluído | 401/4 sem sessão; 400/3; 400/110; 409/111; preço do banco; Pendente em UTC; tudo numa transação. |
+| C05 | Meus pedidos | Concluído | Só os pedidos do cliente, do mais recente ao mais antigo, com situação, total e itens. |
 
-Para o quadro remoto: crie as colunas A fazer, Em andamento e Concluído; cadastre cada linha como cartão. Mova cartões somente após implementar e verificar os critérios. O CSV ao lado contém os mesmos cartões para auxiliar o cadastro; não pressupõe importação nativa pelo GitHub Projects.
+## Histórico
 
-## Avanço na Aula 2
-
-- US01 e US02 recebem listagem paginada, busca, filtros, consulta por ID e leitura dos domínios e vínculos.
-- US03 recebe os sete métodos de PlataformaRepository.
-- US04 recebe gravação, alteração, desativação e manutenção de vínculos.
-- US05 recebe GeneroRepository e CondicaoJogoRepository.
-- US06 aguarda a aula de autenticação.
-
-Os critérios completos ainda dependem de Service, API e telas nas próximas aulas. A sincronização do quadro remoto está pendente da conexão com GitHub.
+- Aula 2: camada Repository das cinco primeiras funcionalidades.
+- Aula 3: Services com as regras de negócio (RN01–RN05) e erros padronizados.
+- Aulas 4 e 5: API de leitura e gravação, validação e envelope.
+- Aula 6: autenticação, autorização e RN04 por perfil.
+- Aula 7: front-end público (catálogo e detalhe).
+- Aula 8: login e administração no front-end; identidade visual.
+- Aula 9: testes unitários de todos os Services.
+- Desafio (versão básica): Módulo de Compras, C01 a C05 (`docs/SPRINT.md`, `docs/ESPECIFICACAO_COMPRAS.md`).

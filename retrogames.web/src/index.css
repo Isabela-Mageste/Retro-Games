@@ -1,0 +1,376 @@
+/*
+ * Identidade visual do RetroGames: tema escuro, rosa como cor principal e azul nos destaques.
+ * Os valores sobrescrevem as variáveis do Bootstrap 5.3 (data-bs-theme="dark" no index.html),
+ * então os componentes do Bootstrap herdam as cores sem CSS repetido em cada tela.
+ *
+ * Contraste: texto escuro sobre o rosa e o azul (botões) e texto claro sobre o fundo escuro
+ * ficam acima de 4,5:1 (WCAG AA).
+ */
+
+:root,
+[data-bs-theme='dark'] {
+  --rg-fundo: #0d0814;
+  --rg-superficie: #170f22;
+  --rg-superficie-2: #21162f;
+  --rg-borda: #3a2a4d;
+  --rg-texto: #f6eef8;
+  --rg-texto-suave: #b9a9c6;
+  --rg-rosa: #ff4fa3;
+  --rg-rosa-claro: #ff7dbb;
+  --rg-rosa-escuro: #d6337f;
+  --rg-azul: #38bdf8;
+  --rg-azul-claro: #7dd3fc;
+  --rg-texto-sobre-cor: #1a0b16;
+  --rg-fonte-marca: 'Press Start 2P', ui-monospace, monospace;
+  --rg-fonte-titulo: 'Rajdhani', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --bs-body-bg: var(--rg-fundo);
+  --bs-body-color: var(--rg-texto);
+  --bs-secondary-color: var(--rg-texto-suave);
+  --bs-tertiary-bg: var(--rg-superficie-2);
+  --bs-border-color: var(--rg-borda);
+  --bs-emphasis-color: #ffffff;
+  --bs-primary: var(--rg-rosa);
+  --bs-primary-rgb: 255, 79, 163;
+  --bs-info: var(--rg-azul);
+  --bs-info-rgb: 56, 189, 248;
+  --bs-link-color: var(--rg-azul);
+  --bs-link-color-rgb: 56, 189, 248;
+  --bs-link-hover-color: var(--rg-azul-claro);
+  --bs-link-hover-color-rgb: 125, 211, 252;
+  --bs-focus-ring-color: rgba(56, 189, 248, 0.45);
+  --bs-form-invalid-color: #ff8a9b;
+  --bs-form-invalid-border-color: #ff6b81;
+  --bs-card-bg: var(--rg-superficie);
+}
+
+body {
+  background:
+    radial-gradient(1200px 500px at 10% -10%, rgba(255, 79, 163, 0.12), transparent 60%),
+    radial-gradient(900px 400px at 100% 0%, rgba(56, 189, 248, 0.08), transparent 60%),
+    var(--rg-fundo);
+  background-attachment: fixed;
+}
+
+h1, h2, h3, h4, h5, .titulo-secao {
+  font-family: var(--rg-fonte-titulo);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* Foco sempre visível (navegação só com o teclado). */
+:focus-visible {
+  outline: 2px solid var(--rg-azul);
+  outline-offset: 2px;
+}
+
+/* ---------- Barra de navegação ---------- */
+.navbar-retro {
+  background: rgba(23, 15, 34, 0.92);
+  backdrop-filter: blur(8px);
+  border-bottom: 2px solid transparent;
+  border-image: linear-gradient(90deg, var(--rg-rosa), var(--rg-azul)) 1;
+}
+
+.marca-retro {
+  font-family: var(--rg-fonte-marca);
+  font-size: 0.95rem;
+  color: var(--rg-rosa) !important;
+  text-shadow: 2px 2px 0 rgba(56, 189, 248, 0.55);
+  letter-spacing: 0.04em;
+}
+
+.navbar-retro .nav-link {
+  color: var(--rg-texto-suave);
+  font-weight: 600;
+}
+
+.navbar-retro .nav-link:hover,
+.navbar-retro .nav-link:focus-visible {
+  color: var(--rg-texto);
+}
+
+.navbar-retro .nav-link.active {
+  color: var(--rg-rosa);
+}
+
+.navbar-retro .dropdown-menu {
+  --bs-dropdown-bg: var(--rg-superficie-2);
+  --bs-dropdown-border-color: var(--rg-borda);
+  --bs-dropdown-link-hover-bg: rgba(255, 79, 163, 0.15);
+  --bs-dropdown-link-active-bg: var(--rg-rosa);
+  --bs-dropdown-link-active-color: var(--rg-texto-sobre-cor);
+}
+
+.saudacao {
+  color: var(--rg-azul-claro);
+  font-weight: 600;
+}
+
+/* ---------- Botões ---------- */
+.btn-primary {
+  --bs-btn-color: var(--rg-texto-sobre-cor);
+  --bs-btn-bg: var(--rg-rosa);
+  --bs-btn-border-color: var(--rg-rosa);
+  --bs-btn-hover-color: var(--rg-texto-sobre-cor);
+  --bs-btn-hover-bg: var(--rg-rosa-claro);
+  --bs-btn-hover-border-color: var(--rg-rosa-claro);
+  --bs-btn-active-color: var(--rg-texto-sobre-cor);
+  --bs-btn-active-bg: var(--rg-rosa-escuro);
+  --bs-btn-active-border-color: var(--rg-rosa-escuro);
+  --bs-btn-disabled-color: var(--rg-texto-sobre-cor);
+  --bs-btn-disabled-bg: var(--rg-rosa);
+  --bs-btn-disabled-border-color: var(--rg-rosa);
+  font-weight: 700;
+}
+
+.btn-outline-primary {
+  --bs-btn-color: var(--rg-rosa);
+  --bs-btn-border-color: var(--rg-rosa);
+  --bs-btn-hover-color: var(--rg-texto-sobre-cor);
+  --bs-btn-hover-bg: var(--rg-rosa);
+  --bs-btn-hover-border-color: var(--rg-rosa);
+  --bs-btn-active-color: var(--rg-texto-sobre-cor);
+  --bs-btn-active-bg: var(--rg-rosa-escuro);
+  --bs-btn-active-border-color: var(--rg-rosa-escuro);
+  --bs-btn-disabled-color: var(--rg-rosa);
+  --bs-btn-disabled-border-color: var(--rg-rosa);
+}
+
+.btn-info,
+.btn-azul {
+  --bs-btn-color: var(--rg-texto-sobre-cor);
+  --bs-btn-bg: var(--rg-azul);
+  --bs-btn-border-color: var(--rg-azul);
+  --bs-btn-hover-color: var(--rg-texto-sobre-cor);
+  --bs-btn-hover-bg: var(--rg-azul-claro);
+  --bs-btn-hover-border-color: var(--rg-azul-claro);
+  --bs-btn-active-bg: #0ea5e9;
+  font-weight: 700;
+}
+
+.btn-outline-info {
+  --bs-btn-color: var(--rg-azul);
+  --bs-btn-border-color: var(--rg-azul);
+  --bs-btn-hover-color: var(--rg-texto-sobre-cor);
+  --bs-btn-hover-bg: var(--rg-azul);
+  --bs-btn-hover-border-color: var(--rg-azul);
+}
+
+/* ---------- Formulários ---------- */
+.form-control,
+.form-select {
+  background-color: var(--rg-superficie-2);
+  border-color: var(--rg-borda);
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--rg-superficie-2);
+  border-color: var(--rg-azul);
+  box-shadow: 0 0 0 0.2rem rgba(56, 189, 248, 0.25);
+}
+
+.form-check-input:checked {
+  background-color: var(--rg-rosa);
+  border-color: var(--rg-rosa);
+}
+
+.form-text {
+  color: var(--rg-texto-suave);
+}
+
+/* ---------- Superfícies ---------- */
+.painel {
+  background: var(--rg-superficie);
+  border: 1px solid var(--rg-borda);
+  border-radius: 1rem;
+}
+
+.card {
+  --bs-card-bg: var(--rg-superficie);
+  --bs-card-border-color: var(--rg-borda);
+  border-radius: 1rem;
+}
+
+.card-jogo {
+  transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.card-jogo:hover,
+.card-jogo:focus-within {
+  transform: translateY(-3px);
+  border-color: var(--rg-rosa);
+  box-shadow: 0 0.6rem 1.4rem rgba(255, 79, 163, 0.18);
+}
+
+.capa-jogo {
+  height: 6px;
+  border-radius: 1rem 1rem 0 0;
+  background: linear-gradient(90deg, var(--rg-rosa), var(--rg-azul));
+}
+
+.plataforma-rotulo {
+  color: var(--rg-azul);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.preco {
+  color: var(--rg-rosa);
+  font-family: var(--rg-fonte-titulo);
+  font-weight: 700;
+}
+
+.badge-genero {
+  color: var(--rg-azul-claro);
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  font-weight: 600;
+}
+
+.badge-esgotado {
+  color: var(--rg-texto-sobre-cor);
+  background: #fbbf24;
+}
+
+.badge-ativo {
+  color: var(--rg-texto-sobre-cor);
+  background: #4ade80;
+}
+
+.badge-inativo {
+  color: var(--rg-texto);
+  background: #4b3a5e;
+}
+
+/* Capa ilustrada (components/CapaJogo.jsx) */
+.capa-ilustrada {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.45), 0 0 0 1px var(--rg-borda);
+}
+
+.capa-detalhe {
+  max-width: 320px;
+}
+
+.capa-miniatura {
+  width: 56px;
+  flex-shrink: 0;
+  border-radius: 0.4rem;
+  box-shadow: none;
+}
+
+.ano-lancamento {
+  color: var(--rg-texto-suave);
+  font-family: var(--rg-fonte-titulo);
+  font-size: 1.15rem;
+}
+
+.ano-lancamento strong {
+  color: var(--rg-azul);
+}
+
+/* Carrinho e pedidos */
+.min-w-0 {
+  min-width: 0;
+}
+
+@media (min-width: 992px) {
+  .resumo-pedido {
+    position: sticky;
+    top: 5.5rem;
+  }
+}
+
+.badge-pendente {
+  color: var(--rg-texto-sobre-cor);
+  background: #fbbf24;
+}
+
+.pedido-novo {
+  border-color: var(--rg-rosa);
+  box-shadow: 0 0 0 1px var(--rg-rosa), 0 0.6rem 1.4rem rgba(255, 79, 163, 0.18);
+}
+
+.contador-carrinho {
+  color: var(--rg-texto-sobre-cor);
+  background: var(--rg-azul);
+  font-size: 0.7rem;
+}
+
+/* Destaque do catálogo */
+.destaque {
+  background:
+    linear-gradient(135deg, rgba(255, 79, 163, 0.18), rgba(56, 189, 248, 0.12)),
+    var(--rg-superficie);
+  border: 1px solid var(--rg-borda);
+  border-radius: 1.25rem;
+}
+
+.destaque .marca-retro {
+  font-size: clamp(1rem, 3.5vw, 1.6rem);
+  line-height: 1.5;
+}
+
+/* ---------- Tabelas ---------- */
+/* A legenda escondida (para leitores de tela) ficava 1px abaixo da tabela e criava uma barra de
+   rolagem vertical; a rolagem dessas caixas é só horizontal. */
+.table-responsive {
+  overflow-y: hidden;
+}
+
+.table {
+  --bs-table-bg: transparent;
+  --bs-table-hover-bg: rgba(255, 79, 163, 0.07);
+  --bs-table-border-color: var(--rg-borda);
+  margin-bottom: 0;
+}
+
+.table thead th {
+  color: var(--rg-texto-suave);
+  font-size: 0.8rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---------- Paginação ---------- */
+.pagination {
+  --bs-pagination-bg: var(--rg-superficie);
+  --bs-pagination-border-color: var(--rg-borda);
+  --bs-pagination-color: var(--rg-texto);
+  --bs-pagination-hover-bg: var(--rg-superficie-2);
+  --bs-pagination-hover-color: var(--rg-rosa);
+  --bs-pagination-active-bg: var(--rg-rosa);
+  --bs-pagination-active-border-color: var(--rg-rosa);
+  --bs-pagination-active-color: var(--rg-texto-sobre-cor);
+  --bs-pagination-disabled-bg: var(--rg-superficie);
+  --bs-pagination-disabled-color: #6b5a7c;
+  --bs-pagination-focus-box-shadow: 0 0 0 0.2rem rgba(56, 189, 248, 0.35);
+}
+
+/* ---------- Rodapé ---------- */
+.rodape-retro {
+  background: var(--rg-superficie);
+  border-top: 1px solid var(--rg-borda);
+  color: var(--rg-texto-suave);
+}
+
+/* Telas estreitas: botões de ação ocupam a largura e ficam fáceis de tocar. */
+@media (max-width: 575.98px) {
+  .acoes-tabela .btn {
+    min-width: 2.75rem;
+    min-height: 2.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+  }
+}

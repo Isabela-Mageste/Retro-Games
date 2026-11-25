@@ -1,7 +1,15 @@
-ID,Título,Estado
-US01,Catálogo público,Em andamento
-US02,Detalhe de jogo,Em andamento
-US03,Manutenção de plataformas,Em andamento
-US04,Manutenção de jogos,Em andamento
-US05,Consulta de domínios,Em andamento
-US06,Autenticação e autorização,A fazer
+ID,Título,Estado,Critério de aceite
+US01,Catálogo público,Concluído,"Busca, filtros na URL, paginação, só jogos ativos"
+US02,Detalhe de jogo,Concluído,"Plataforma, condição e gêneros; inexistente ou inativo mostra Jogo não encontrado"
+US03,Manutenção de plataformas,Concluído,"Incluir, alterar e excluir pela tela; erros 3, 101 e 102 aparecem"
+US04,Manutenção de jogos,Concluído,"Incluir e alterar com gêneros; desativar mantém o jogo como Inativo"
+US05,Consulta de domínios,Concluído,"Gêneros e condições nas listas de seleção"
+US06,Autenticação e autorização,Concluído,"Login, F5 e Sair; /admin leva ao login; gravação só para administrador"
+T01,Testes unitários dos Services,Concluído,"Cada regra de negócio com teste; dotnet test sem falhas"
+T02,Identidade visual e responsividade,Concluído,"Tema escuro rosa e azul; sem rolagem horizontal a 375 px; heurísticas de Nielsen"
+T03,Conferência de ponta a ponta,Concluído,"docs/conferencia_api.sh sem falhas; checklists das aulas conferidos"
+C01,Cadastro de cliente,Concluído,"Nome, e-mail válido e senha; perfil Cliente; e-mail repetido 409/106; sessão começa após o cadastro"
+C02,Cliente logado,Concluído,"Menu com Carrinho e Meus pedidos; sem Administração"
+C03,Carrinho,Concluído,"Adicionar pelo detalhe (não esgotado); quantidade de 1 a 10; remover; total; localStorage"
+C04,Finalizar compra,Concluído,"401/4; 400/3; 400/110; 409/111; preço do banco; Pendente em UTC; transação única"
+C05,Meus pedidos,Concluído,"Só os pedidos do cliente, do mais recente ao mais antigo, com situação, total e itens"

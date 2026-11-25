@@ -104,6 +104,41 @@ public class JogoRepository : RepositoryBase, IJogoRepository
         await ExecutarGravacaoAsync(comando, cancelamento);
     }
 
+    public async Task<IReadOnlyList<Jogo>> ListarPorIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancelamento = default)
+    {
+        cancelamento.ThrowIfCancellationRequested();
+        var lista = ids.ToArray();
+        if (lista.Length == 0)
+            return Array.Empty<Jogo>();
+        await using var conexao = await AbrirConexaoAsync(cancelamento);
+        await using var comando = CriarComando(conexao, string.Empty);
+        var nomes = new List<string>();
+        for (var indice = 0; indice < lista.Length; indice++)
+        {
+            nomes.Add("@id" + indice);
+            AdicionarParametro(comando, "@id" + indice, lista[indice]);
+        }
+        // Somente trechos fixos e nomes de parâmetros entram na montagem do SQL.
+        comando.CommandText = "SELECT " + Colunas + " FROM tb_jogo WHERE co_seq_jogo IN (" + string.Join(", ", nomes) + ")";
+        await using var leitor = await comando.ExecuteReaderAsync(cancelamento);
+        var jogos = new List<Jogo>();
+        while (await leitor.ReadAsync(cancelamento))
+            jogos.Add(Mapear(leitor));
+        return jogos;
+    }
+
+    // O "qt_estoque >= @quantidade" protege contra duas compras simultâneas do último item:
+    // se outra transação já baixou o estoque, nenhuma linha é alterada e o Service decide o erro.
+    public async Task<bool> BaixarEstoqueAsync(int id, int quantidade, CancellationToken cancelamento = default)
+    {
+        const string sql = "UPDATE tb_jogo SET qt_estoque = qt_estoque - @quantidade WHERE co_seq_jogo = @id AND qt_estoque >= @quantidade";
+        await using var conexao = await AbrirConexaoAsync(cancelamento);
+        await using var comando = CriarComando(conexao, sql);
+        AdicionarParametro(comando, "@quantidade", quantidade);
+        AdicionarParametro(comando, "@id", id);
+        return await ExecutarGravacaoAsync(comando, cancelamento) > 0;
+    }
+
     private void PreencherParametros(MySqlCommand comando, Jogo jogo)
     {
         AdicionarParametro(comando, "@nome", jogo.Nome);
