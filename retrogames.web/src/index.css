@@ -246,6 +246,36 @@ h1, h2, h3, h4, h5, .titulo-secao {
   background: #4b3a5e;
 }
 
+/* Capa ilustrada (components/CapaJogo.jsx) */
+.capa-ilustrada {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.45), 0 0 0 1px var(--rg-borda);
+}
+
+.capa-detalhe {
+  max-width: 320px;
+}
+
+.capa-miniatura {
+  width: 56px;
+  flex-shrink: 0;
+  border-radius: 0.4rem;
+  box-shadow: none;
+}
+
+.ano-lancamento {
+  color: var(--rg-texto-suave);
+  font-family: var(--rg-fonte-titulo);
+  font-size: 1.15rem;
+}
+
+.ano-lancamento strong {
+  color: var(--rg-azul);
+}
+
 /* Destaque do catálogo */
 .destaque {
   background:
