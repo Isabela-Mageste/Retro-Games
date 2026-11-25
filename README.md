@@ -44,6 +44,10 @@ Essa mensagem significa que o front-end não alcançou a API. Confira, na ordem:
    repasse de `/api` para a porta 5080 é feito pelo servidor do Vite.
 4. **`dotnet` ou `npm` "não é reconhecido"?** As ferramentas não estão no PATH; use o `iniciar.cmd`, que as
    procura também nas pastas de instalação por usuário.
+5. **No PowerShell, `npm` diz que "a execução de scripts foi desabilitada"?** É a política de scripts padrão do
+   Windows bloqueando o `npm.ps1`. Use `npm.cmd` no lugar de `npm` (por exemplo, `npm.cmd run dev`), rode no
+   Prompt de Comando ou no Git Bash, ou libere scripts locais só para o seu usuário com
+   `Set-ExecutionPolicy RemoteSigned -Scope CurrentUser`.
 
 ## 1. Banco de dados
 
