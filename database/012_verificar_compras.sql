@@ -1,5 +1,6 @@
 -- Desafio, Módulo de Compras. Conferência no Workbench dos comandos dos repositórios de pedido.
--- Selecione o schema do RetroGames (com 001, 002, 010 e 011 executados e ao menos um usuário).
+-- Selecione o schema do RetroGames (com 001, 002, 010 e 011 executados). Funciona também num banco novo,
+-- sem usuários: o cliente usado no teste é criado aqui e desfeito no ROLLBACK.
 -- As variáveis @... equivalem aos parâmetros dos comandos C#. As gravações são desfeitas no final.
 SET NAMES utf8mb4;
 START TRANSACTION;
@@ -12,8 +13,12 @@ SET @id0 = 1; SET @id1 = 24;
 SELECT co_seq_jogo, no_jogo, ds_jogo, nu_ano_lancamento, vl_preco, qt_estoque, st_ativo, dt_cadastro, co_plataforma, co_condicao_jogo
 FROM tb_jogo WHERE co_seq_jogo IN (@id0, @id1);
 
+-- Cliente temporário para o teste (desfeito no ROLLBACK).
+INSERT INTO tb_usuario (no_usuario, ds_email, ds_senha_hash, st_ativo, dt_cadastro, co_perfil)
+VALUES ('Cliente temporário 012', 'temporario.012@retrogames.local', 'HASH-DE-EXEMPLO', TRUE, UTC_TIMESTAMP(), 2);
+SET @idUsuario = LAST_INSERT_ID();
+
 -- PedidoRepository.InserirAsync
-SET @idUsuario = (SELECT MIN(co_seq_usuario) FROM tb_usuario);
 SET @dataPedido = UTC_TIMESTAMP(); SET @total = 69.90; SET @idSituacao = 1;
 INSERT INTO tb_pedido (dt_pedido, vl_total, co_usuario, co_situacao_pedido) VALUES (@dataPedido, @total, @idUsuario, @idSituacao);
 SET @idPedido = LAST_INSERT_ID();
