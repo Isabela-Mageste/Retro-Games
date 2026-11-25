@@ -24,7 +24,7 @@ public class PlataformaServiceTests
             .ReturnsAsync(new Plataforma { Id = id, Nome = "NES", Fabricante = "Nintendo", AnoLancamento = 1983 });
 
     [Fact]
-    public async Task BuscarPorId_Inexistente_LancaPlataformaNaoEncontrada()
+    public async Task BuscarPorId_IdInexistente_LancaNaoEncontrada()
     {
         // Arrange
         _plataformas.Setup(r => r.BuscarPorIdAsync(99, It.IsAny<CancellationToken>())).ReturnsAsync((Plataforma?)null);
