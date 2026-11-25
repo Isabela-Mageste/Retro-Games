@@ -1,7 +1,10 @@
-ID,Título,Estado
-US01,Catálogo público,Concluído
-US02,Detalhe de jogo,Concluído
-US03,Manutenção de plataformas,Em andamento
-US04,Manutenção de jogos,Em andamento
-US05,Consulta de domínios,Concluído
-US06,Autenticação e autorização,Em andamento
+ID,Título,Estado,Critério de aceite
+US01,Catálogo público,Concluído,"Busca, filtros na URL, paginação, só jogos ativos"
+US02,Detalhe de jogo,Concluído,"Plataforma, condição e gêneros; inexistente ou inativo mostra Jogo não encontrado"
+US03,Manutenção de plataformas,Concluído,"Incluir, alterar e excluir pela tela; erros 3, 101 e 102 aparecem"
+US04,Manutenção de jogos,Concluído,"Incluir e alterar com gêneros; desativar mantém o jogo como Inativo"
+US05,Consulta de domínios,Concluído,"Gêneros e condições nas listas de seleção"
+US06,Autenticação e autorização,Concluído,"Login, F5 e Sair; /admin leva ao login; gravação só para administrador"
+T01,Testes unitários dos Services,Concluído,"Cada regra de negócio com teste; dotnet test sem falhas"
+T02,Identidade visual e responsividade,Concluído,"Tema escuro rosa e azul; sem rolagem horizontal a 375 px; heurísticas de Nielsen"
+T03,Conferência de ponta a ponta,Concluído,"docs/conferencia_api.sh sem falhas; checklists das aulas conferidos"

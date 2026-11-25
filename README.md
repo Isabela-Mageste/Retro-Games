@@ -12,6 +12,11 @@ seguindo a especificação **RetroGames — Arquitetura e Stack** e os roteiros 
 | 5 | Validação (FluentValidation) e gravação | `docs/AULAS_3_A_7.md` |
 | 6 | Login com cookie, hash de senha e autorização | `docs/AULAS_3_A_7.md` |
 | 7 | Front-end React: catálogo e detalhe do jogo | `docs/AULAS_3_A_7.md` |
+| 8 | Front-end: login, menu, rotas protegidas e administração | `docs/AULAS_8_E_9.md` |
+| 9 | Testes unitários dos Services (xUnit + Moq) | `docs/AULAS_8_E_9.md` |
+
+Interface (identidade visual, celular e heurísticas de Nielsen): `docs/INTERFACE.md`. Planejamento da sprint:
+`docs/SPRINT.md`.
 
 ## Pré-requisitos
 
@@ -55,7 +60,8 @@ npm install
 npm run dev
 ```
 
-Abra http://localhost:5173. O Vite repassa `/api` para a porta 5080, então front-end e API têm a mesma origem
+Abra http://localhost:5173. Para administrar, clique em **Entrar** e use o e-mail e a senha de `AdminInicial`
+do seu `.env`. O Vite repassa `/api` para a porta 5080, então front-end e API têm a mesma origem
 (sem CORS, com o cookie `SameSite=Strict`).
 
 ## 5. Testes e build
