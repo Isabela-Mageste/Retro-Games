@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { obterMensagemErro } from '../../api/erros.js';
+import { obterErrosDosCampos, obterMensagemErro } from '../../api/erros.js';
 import useAutenticacao from '../../hooks/useAutenticacao.js';
 
 // Só aceita destinos internos ("/admin/jogos"), nunca outro site ("//exemplo.com").
@@ -18,6 +18,7 @@ export default function Login() {
   const [senha, definirSenha] = useState('');
   const [enviando, definirEnviando] = useState(false);
   const [erro, definirErro] = useState(null);
+  const [errosCampos, definirErrosCampos] = useState({});
 
   // Quem já está logado não precisa ver o formulário.
   useEffect(() => {
@@ -28,11 +29,14 @@ export default function Login() {
     evento.preventDefault();
     definirEnviando(true);
     definirErro(null);
+    definirErrosCampos({});
     try {
       await entrar(email.trim(), senha);
       navegar(destino, { replace: true });
     } catch (falha) {
-      definirErro(obterMensagemErro(falha));
+      const porCampo = obterErrosDosCampos(falha);
+      definirErrosCampos(porCampo);
+      if (Object.keys(porCampo).length === 0) definirErro(obterMensagemErro(falha));
       definirSenha('');
     } finally {
       definirEnviando(false);
@@ -61,25 +65,29 @@ export default function Login() {
               <input
                 id="email"
                 type="email"
-                className="form-control"
+                className={`form-control ${errosCampos.email ? 'is-invalid' : ''}`}
+                aria-describedby={errosCampos.email ? 'erroEmail' : undefined}
                 autoComplete="username"
                 value={email}
                 onChange={(evento) => definirEmail(evento.target.value)}
                 required
                 autoFocus
               />
+              {errosCampos.email && <div id="erroEmail" className="invalid-feedback">{errosCampos.email}</div>}
             </div>
             <div className="mb-4">
               <label htmlFor="senha" className="form-label">Senha</label>
               <input
                 id="senha"
                 type="password"
-                className="form-control"
+                className={`form-control ${errosCampos.senha ? 'is-invalid' : ''}`}
+                aria-describedby={errosCampos.senha ? 'erroSenha' : undefined}
                 autoComplete="current-password"
                 value={senha}
                 onChange={(evento) => definirSenha(evento.target.value)}
                 required
               />
+              {errosCampos.senha && <div id="erroSenha" className="invalid-feedback">{errosCampos.senha}</div>}
             </div>
             <button type="submit" className="btn btn-primary w-100" disabled={enviando}>
               {enviando ? (

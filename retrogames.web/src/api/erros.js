@@ -13,3 +13,20 @@ export function obterMensagemErro(erro) {
 
   return 'Ocorreu um erro inesperado. Tente novamente.';
 }
+
+const MODEL_STATE_INVALIDO = 3;
+
+// Com responseCode 3 (400 de validação), devolve { campo: mensagem }, com a primeira mensagem
+// de cada campo. Nos demais casos, devolve {}.
+// "idsGeneros[0]" vira "idsGeneros", para o erro aparecer junto da lista inteira.
+export function obterErrosDosCampos(erro) {
+  const envelope = erro?.response?.data;
+  if (envelope?.responseCode !== MODEL_STATE_INVALIDO || !envelope.data) return {};
+
+  const erros = {};
+  Object.entries(envelope.data).forEach(([campo, mensagens]) => {
+    const nome = campo.replace(/\[\d+\]$/, '');
+    if (!erros[nome]) erros[nome] = Array.isArray(mensagens) ? mensagens[0] : String(mensagens);
+  });
+  return erros;
+}

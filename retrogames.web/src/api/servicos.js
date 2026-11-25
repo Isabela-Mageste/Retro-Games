@@ -11,13 +11,20 @@ export const autenticacaoApi = {
 };
 
 export const jogoApi = {
-  // filtros: { busca, idPlataforma, idGenero, pagina, tamanhoPagina }
+  // filtros: { busca, idPlataforma, idGenero, pagina, tamanhoPagina, incluirInativos }
   listar: (filtros) => api.get('/Jogo', { params: filtros }).then(dados),
   buscarPorId: (id) => api.get(`/Jogo/${id}`).then(dados),
+  inserir: (jogo) => api.post('/Jogo', jogo).then(dados),
+  alterar: (id, jogo) => api.put(`/Jogo/${id}`, jogo).then(dados),
+  // Exclusão lógica (RN03): a API só desativa o jogo.
+  desativar: (id) => api.delete(`/Jogo/${id}`).then(dados),
 };
 
 export const plataformaApi = {
   listar: () => api.get('/Plataforma').then(dados),
+  inserir: (plataforma) => api.post('/Plataforma', plataforma).then(dados),
+  alterar: (id, plataforma) => api.put(`/Plataforma/${id}`, plataforma).then(dados),
+  excluir: (id) => api.delete(`/Plataforma/${id}`).then(dados),
 };
 
 export const generoApi = {
