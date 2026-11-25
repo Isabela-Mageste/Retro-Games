@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import useAutenticacao from '../hooks/useAutenticacao.js';
+import useCarrinho from '../hooks/useCarrinho.js';
 
 // Moldura comum: menu, área da página (<Outlet />) e rodapé.
-// O menu muda conforme quem está logado: visitante vê Entrar; logado vê "Olá, nome" e Sair;
-// administrador vê também o menu Administração.
+// O menu muda conforme quem está logado: visitante vê Entrar; logado vê Carrinho, Meus pedidos,
+// "Olá, nome" e Sair (C02); só o administrador vê o menu Administração.
 export default function Layout() {
   const location = useLocation();
   const navegar = useNavigate();
   const { usuario, carregando, estaAutenticado, ehAdministrador, sair } = useAutenticacao();
+  const { quantidadeTotal } = useCarrinho();
   const [menuAberto, definirMenuAberto] = useState(false);
   const [adminAberto, definirAdminAberto] = useState(false);
   const [saindo, definirSaindo] = useState(false);
@@ -54,6 +56,23 @@ export default function Layout() {
               <li className="nav-item">
                 <NavLink className="nav-link" to="/" end>Catálogo</NavLink>
               </li>
+              {(estaAutenticado || quantidadeTotal > 0) && (
+                <li className="nav-item">
+                  <NavLink className="nav-link d-flex align-items-center gap-1" to="/carrinho">
+                    Carrinho
+                    {quantidadeTotal > 0 && (
+                      <span className="badge rounded-pill contador-carrinho">
+                        {quantidadeTotal}<span className="visually-hidden"> {quantidadeTotal === 1 ? 'item' : 'itens'}</span>
+                      </span>
+                    )}
+                  </NavLink>
+                </li>
+              )}
+              {estaAutenticado && (
+                <li className="nav-item">
+                  <NavLink className="nav-link" to="/meus-pedidos">Meus pedidos</NavLink>
+                </li>
+              )}
               {ehAdministrador && (
                 <li className="nav-item dropdown">
                   <button
