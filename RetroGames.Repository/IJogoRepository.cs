@@ -12,4 +12,10 @@ public interface IJogoRepository
     Task<int> InserirAsync(Jogo jogo, CancellationToken cancelamento = default);
     Task AlterarAsync(Jogo jogo, CancellationToken cancelamento = default);
     Task DesativarAsync(int id, CancellationToken cancelamento = default);
+
+    // Desafio, C04/C05: vários jogos numa única consulta (inclusive inativos).
+    Task<IReadOnlyList<Jogo>> ListarPorIdsAsync(IReadOnlyCollection<int> ids, CancellationToken cancelamento = default);
+
+    // Desafio, C04: baixa o estoque só se houver quantidade suficiente. Devolve false se não baixou.
+    Task<bool> BaixarEstoqueAsync(int id, int quantidade, CancellationToken cancelamento = default);
 }

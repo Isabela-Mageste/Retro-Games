@@ -28,4 +28,10 @@ public static class BusinessErrors
     // Desafio: Módulo de Compras (versão básica). Códigos fixados no documento do desafio.
     public static readonly (int Code, string DefaultMessage, HttpStatusCode Status) EMAIL_JA_CADASTRADO =
         (106, "Já existe uma conta com este e-mail.", HttpStatusCode.Conflict);
+
+    public static readonly (int Code, string DefaultMessage, HttpStatusCode Status) JOGO_INDISPONIVEL =
+        (110, "Um ou mais jogos não estão disponíveis para venda.", HttpStatusCode.BadRequest);
+
+    public static readonly (int Code, string DefaultMessage, HttpStatusCode Status) ESTOQUE_INSUFICIENTE =
+        (111, "Estoque insuficiente.", HttpStatusCode.Conflict);
 }

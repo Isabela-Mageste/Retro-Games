@@ -14,4 +14,12 @@ public class BusinessRuleException : Exception
     {
         Erro = erro;
     }
+
+    // Mesmo erro do catálogo (código e status), com uma mensagem mais específica para a tela,
+    // por exemplo "Estoque insuficiente para Tetris.".
+    public BusinessRuleException((int Code, string DefaultMessage, HttpStatusCode Status) erro, string mensagem)
+        : base(mensagem)
+    {
+        Erro = erro;
+    }
 }

@@ -24,10 +24,11 @@ public static class RespostasDeValidacao
             ResponseCodes.MODEL_NULL.DefaultMessage));
     }
 
-    // "AnoLancamento" e "$.anoLancamento" viram "anoLancamento", como no JSON.
+    // "AnoLancamento" e "$.anoLancamento" viram "anoLancamento", como no JSON;
+    // "Itens[0].Quantidade" vira "itens[0].quantidade".
     public static string NomeDoCampo(string nome)
     {
         var semPrefixo = nome.StartsWith("$.") ? nome[2..] : nome.TrimStart('$');
-        return JsonNamingPolicy.CamelCase.ConvertName(semPrefixo);
+        return string.Join('.', semPrefixo.Split('.').Select(JsonNamingPolicy.CamelCase.ConvertName));
     }
 }
