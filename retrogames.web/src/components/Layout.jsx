@@ -1,15 +1,35 @@
 import React, { useEffect, useState } from 'react';
-import { Link, NavLink, Outlet, useLocation } from 'react-router-dom';
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
+import useAutenticacao from '../hooks/useAutenticacao.js';
 
 // Moldura comum: menu, área da página (<Outlet />) e rodapé.
+// O menu muda conforme quem está logado: visitante vê Entrar; logado vê "Olá, nome" e Sair;
+// administrador vê também o menu Administração.
 export default function Layout() {
   const location = useLocation();
+  const navegar = useNavigate();
+  const { usuario, carregando, estaAutenticado, ehAdministrador, sair } = useAutenticacao();
   const [menuAberto, definirMenuAberto] = useState(false);
+  const [adminAberto, definirAdminAberto] = useState(false);
+  const [saindo, definirSaindo] = useState(false);
 
   // No celular, o menu recolhe sozinho depois de escolher uma página.
   useEffect(() => {
     definirMenuAberto(false);
+    definirAdminAberto(false);
   }, [location.pathname]);
+
+  async function aoSair() {
+    definirSaindo(true);
+    try {
+      await sair();
+    } finally {
+      definirSaindo(false);
+      navegar('/');
+    }
+  }
+
+  const emAdministracao = location.pathname.startsWith('/admin');
 
   return (
     <div className="d-flex flex-column min-vh-100">
@@ -34,7 +54,38 @@ export default function Layout() {
               <li className="nav-item">
                 <NavLink className="nav-link" to="/" end>Catálogo</NavLink>
               </li>
+              {ehAdministrador && (
+                <li className="nav-item dropdown">
+                  <button
+                    type="button"
+                    className={`nav-link dropdown-toggle ${emAdministracao ? 'active' : ''}`}
+                    aria-expanded={adminAberto}
+                    onClick={() => definirAdminAberto((aberto) => !aberto)}
+                  >
+                    Administração
+                  </button>
+                  <ul className={`dropdown-menu ${adminAberto ? 'show' : ''}`}>
+                    <li><NavLink className="dropdown-item" to="/admin/jogos">Jogos</NavLink></li>
+                    <li><NavLink className="dropdown-item" to="/admin/plataformas">Plataformas</NavLink></li>
+                  </ul>
+                </li>
+              )}
             </ul>
+
+            {!carregando && (
+              <div className="d-flex flex-column flex-md-row align-items-md-center gap-2 py-2 py-md-0">
+                {estaAutenticado ? (
+                  <>
+                    <span className="saudacao">Olá, {usuario.nome}</span>
+                    <button type="button" className="btn btn-outline-info btn-sm" onClick={aoSair} disabled={saindo}>
+                      {saindo ? 'Saindo...' : 'Sair'}
+                    </button>
+                  </>
+                ) : (
+                  <NavLink className="btn btn-primary btn-sm" to="/login">Entrar</NavLink>
+                )}
+              </div>
+            )}
           </div>
         </div>
       </nav>
